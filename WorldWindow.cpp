@@ -20,6 +20,9 @@ WorldWindow::WorldWindow(int x, int y, int width, int height, char *label)
 {
     button = -1;
 
+	keybutton = -1;
+	stop = false;
+
     // Initial viewing parameters.
     phi = 45.0f;
     theta = 0.0f;
@@ -163,6 +166,26 @@ WorldWindow::Drag(float dt)
     }
 }
 
+void
+WorldWindow::keyControl(float dt) {
+	switch (keybutton)
+	{
+	case FL_Control_L:
+		printf("left control\n");
+		stop = true;
+		return;
+		break;
+	case FL_Shift_L:
+		printf("left shift\n");
+		stop = false;
+		return;
+		break;
+	default:
+		return;
+		break;
+	}
+	return;
+}
 
 bool
 WorldWindow::Update(float dt)
@@ -173,7 +196,8 @@ WorldWindow::Update(float dt)
     if ( button != -1 ) // Only do anything if the mouse button is down.
 	Drag(dt);
 
-	
+	if (keybutton != -1)
+		keyControl(dt);
 
     // Animate the train.
     traintrack.Update(dt);
@@ -207,7 +231,14 @@ WorldWindow::handle(int event)
       case FL_RELEASE:
         button = -1;
 	return 1;
-    }
+
+	  case FL_KEYDOWN:
+		  keybutton = Fl::event_key();
+		  return 1;
+	  case FL_KEYUP:
+		  keybutton = -1;
+		  return 1;
+	}
 
     // Pass any other event types on the superclass.
     return Fl_Gl_Window::handle(event);
