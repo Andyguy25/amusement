@@ -10,8 +10,6 @@
 #include <stdio.h>
 #include <GL/glu.h>
 
-//testcomment
-
 // Destructor
 Ground::~Ground(void)
 {
