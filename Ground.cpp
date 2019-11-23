@@ -3,7 +3,7 @@
  *
  * (c) 2001-2002: Stephen Chenney, University of Wisconsin at Madison.
  */
-
+//testcomment
 
 #include "Ground.h"
 #include "libtarga.h"
