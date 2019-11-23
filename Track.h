@@ -9,18 +9,28 @@
 #define _TRAINTRACK_H_
 
 #include <Fl/gl.h>
+#include <vector>
 #include "CubicBspline.h"
 
 class Track {
   private:
     GLubyte 	    track_list;	    // The display list for the track.
     GLubyte 	    train_list;	    // The display list for the train.
+	GLubyte			train_list2;
 	GLuint			traintext;
 
     bool    	    initialized;    // Whether or not we have been initialized.
     CubicBspline    *track;	    // The spline that defines the track.
     float	    posn_on_track;  // The train's parametric position on the
 				    // track.
+
+	float		second_posn_track;
+
+	std::vector<float> posnvals[3];
+	std::vector<float> tangentvals[3];
+	const int maxLengthOfTrail = 100;
+	const int dfc = 7;  //distance from front cart
+
     float	    speed;	    // The train's speed, in world coordinates
 
     static const int	TRACK_NUM_CONTROLS;	// Constants about the track.
@@ -29,7 +39,7 @@ class Track {
 
   public:
     // Constructor
-    Track(void) { initialized = false; posn_on_track = 0.0f; speed = 0.0f; };
+	  Track(void) { initialized = false; posn_on_track = 0.0f; second_posn_track = 9.0f; speed = 0.0f; };
 
     // Destructor
     ~Track(void);
