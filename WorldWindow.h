@@ -36,7 +36,7 @@ class WorldWindow : public Fl_Gl_Window {
 	bool	Update(float);
 
 	//stop to tell train to stop
-	bool stop;
+	int camAngle;
 
     private:
 	Ground	    ground;	    // The ground object.
@@ -51,8 +51,8 @@ class WorldWindow : public Fl_Gl_Window {
 	float	y_at;	// The y-coord to look at. z_at is assumed 2.0.
 
 	int     button;	// The mouse button that is down, -1 if none.
-
 	int keybutton; //button to keep track of keyboard presses
+	int wheel; //scrollwheel
 
 	int	x_last;	// The location of the most recent mouse event
 	int	y_last;
@@ -68,6 +68,7 @@ class WorldWindow : public Fl_Gl_Window {
 
 	void	Drag(float);	// The function to call for mouse drag events
 	void	keyControl(float);	//function for keyboard controls
+	void	wheelControl(float);
 };
 
 

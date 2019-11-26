@@ -13,15 +13,16 @@
 #include <GL/glu.h>
 #include <stdio.h>
 
-const double WorldWindow::FOV_X = 45.0;
+const double WorldWindow::FOV_X = 75.0;
 
 WorldWindow::WorldWindow(int x, int y, int width, int height, char *label)
 	: Fl_Gl_Window(x, y, width, height, label)
 {
     button = -1;
-
 	keybutton = -1;
-	stop = false;
+	wheel = 0;
+
+	camAngle = 0;
 
     // Initial viewing parameters.
     phi = 45.0f;
@@ -124,7 +125,7 @@ WorldWindow::Drag(float dt)
 {
     int	    dx = x_down - x_last;
     int     dy = y_down - y_last;
-
+	//printf("%d\n", dist_down);
     switch ( button )
     {
       case FL_LEFT_MOUSE:
@@ -172,12 +173,12 @@ WorldWindow::keyControl(float dt) {
 	{
 	case FL_Control_L:
 		printf("left control\n");
-		stop = true;
+		camAngle = 1;
 		return;
 		break;
 	case FL_Shift_L:
 		printf("left shift\n");
-		stop = false;
+		camAngle = 0;
 		return;
 		break;
 	default:
@@ -187,17 +188,36 @@ WorldWindow::keyControl(float dt) {
 	return;
 }
 
+void
+WorldWindow::wheelControl(float dt) {
+	
+	int dy = wheel;
+
+	dist = dist_down - (5.0f * dist_down * dy / (float)h());
+	printf("%d\n", dy);
+	/*if (dist < 1.0f)
+		dist = 1.0f;
+	*/
+}
+
 bool
 WorldWindow::Update(float dt)
 {
     // Update the view. This gets called once per frame before doing the
     // drawing.
 
-    if ( button != -1 ) // Only do anything if the mouse button is down.
-	Drag(dt);
-
-	if (keybutton != -1)
+	if (button != -1) { // Only do anything if the mouse button is down.
+		if (camAngle == 0) {
+			Drag(dt);
+		}
+	}
+	if (keybutton != -1) {
 		keyControl(dt);
+	}
+
+	if (wheel != 0) {
+		wheelControl(dt);
+	}
 
     // Animate the train.
     traintrack.Update(dt);
@@ -237,6 +257,11 @@ WorldWindow::handle(int event)
 		  return 1;
 	  case FL_KEYUP:
 		  keybutton = -1;
+		  return 1;
+
+	  case FL_MOUSEWHEEL:
+		  wheel = Fl::event_dy();
+		  dist_down = dist;
 		  return 1;
 	}
 
