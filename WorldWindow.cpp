@@ -106,7 +106,18 @@ WorldWindow::draw(void)
     eye[2] = 2.0 + dist * sin(phi * M_PI / 180.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(eye[0], eye[1], eye[2], x_at, y_at, 2.0, 0.0, 0.0, 1.0);
+    //gluLookAt(eye[0], eye[1], eye[2], x_at, y_at, 2.0, 0.0, 0.0, 1.0);
+
+
+
+
+	//next test, make a new object that is struct of (6) vectors, use it for new
+	//carts, and for the camera
+	gluLookAt(eye[0], eye[1], eye[2], x_at, y_at, 2.0, 0.0, 0.0, 1.0);
+
+
+
+
 
     // Position the light source. This has to happen after the viewing
     // transformation is set up, so that the light stays fixed in world
@@ -125,7 +136,6 @@ WorldWindow::Drag(float dt)
 {
     int	    dx = x_down - x_last;
     int     dy = y_down - y_last;
-	//printf("%d\n", dist_down);
     switch ( button )
     {
       case FL_LEFT_MOUSE:
@@ -194,10 +204,8 @@ WorldWindow::wheelControl(float dt) {
 	int dy = wheel;
 
 	dist = dist_down - (5.0f * dist_down * dy / (float)h());
-	printf("%d\n", dy);
-	/*if (dist < 1.0f)
+	if (dist < 1.0f)
 		dist = 1.0f;
-	*/
 }
 
 bool

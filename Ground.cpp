@@ -58,7 +58,7 @@ Ground::Initialize(void)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
 		    GL_NEAREST_MIPMAP_LINEAR);
-			
+		
     // This says what to do with the texture. Modulate will multiply the
     // texture by the underlying color.
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE); 
