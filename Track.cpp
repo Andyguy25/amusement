@@ -150,7 +150,6 @@ Track::Initialize(void)
 
 	//right  (front of coaster)
 	glNormal3f(1.0f, 0.0f, 0.0f);
-
 	glVertex3f(0.5f, 0.5f, 0.0f);
 	glVertex3f(0.5f, 0.5f, 0.6f);
 	glVertex3f(0.5f, -0.5f, 0.6f);
@@ -427,8 +426,20 @@ Track::Update(float dt)
     else
 	speed = (float)sqrt(2.0 * ( TRAIN_ENERGY - 9.81 * point[2] ));
 
-
-
 }
 
+/*
+cartInfo 
+Track::getCartInfo(void){
 
+	cartInfo *cart;
+	for (int i = 0; i < posnvals.size(); i++) {
+		cart->posnvals = posnvals;
+	}
+
+	std::vector<float> posnvals[3] = {};
+	std::vector<float> tangentvals[3] = {};
+	const int maxLengthOfTrail = 100;
+	const int dfc = 7;  //distance from front cart
+}
+*/

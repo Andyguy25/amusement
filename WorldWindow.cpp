@@ -7,11 +7,13 @@
  *
  */
 
+#include "Track.h"
 #include "WorldWindow.h"
 #include <Fl/math.h>
 #include <Fl/gl.h>
 #include <GL/glu.h>
 #include <stdio.h>
+#include <iostream>
 
 const double WorldWindow::FOV_X = 75.0;
 
@@ -106,15 +108,29 @@ WorldWindow::draw(void)
     eye[2] = 2.0 + dist * sin(phi * M_PI / 180.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    //gluLookAt(eye[0], eye[1], eye[2], x_at, y_at, 2.0, 0.0, 0.0, 1.0);
+	if (camAngle == 0) {
+		gluLookAt(eye[0], eye[1], eye[2], x_at, y_at, 2.0, 0.0, 0.0, 1.0);
+	}
+	
+	if (camAngle == 1) {
+		std::cout << "posn0: " << traintrack.posnvals[0][0] << " posn1: " << traintrack.posnvals[1][0]
+			<< " posn2: " << traintrack.posnvals[2][0] << " tan0: " << traintrack.tangentvals[0][0]
+			<< " tan1: " << traintrack.tangentvals[1][0] << " tan2: " << traintrack.tangentvals[2][0]
+			<< std::endl;
 
+		float angle = atan2(traintrack.tangentvals[1][0], traintrack.tangentvals[0][0]) * 180.0 / M_PI;
+		float secAng = asin(-traintrack.tangentvals[2][0]) * 180.0 / M_PI;
+		std::cout << " angle: " << angle << " secAng: " << secAng << std::endl;
 
-
+		gluLookAt(eye[0], eye[1], eye[2], x_at, y_at, 2.0, 0.0, 0.0, 1.0);
+		std::cout << "eye0: " << eye[0] << " eye1: " << eye[1] << " eye2: " << eye[2] << " x_at: " << x_at
+			<< " y_at: " << y_at << std::endl << std::endl;
+	}
 
 	//next test, make a new object that is struct of (6) vectors, use it for new
 	//carts, and for the camera
-	gluLookAt(eye[0], eye[1], eye[2], x_at, y_at, 2.0, 0.0, 0.0, 1.0);
-
+	//gluLookAt(50, 0, 60, 10, 0, 2.0, 0.0, 0.0, 1.0);
+	
 
 
 
@@ -203,7 +219,7 @@ WorldWindow::wheelControl(float dt) {
 	
 	int dy = wheel;
 
-	dist = dist_down - (5.0f * dist_down * dy / (float)h());
+	dist = dist_down - (10.0f * dist_down * dy / (float)h());
 	if (dist < 1.0f)
 		dist = 1.0f;
 }
@@ -243,6 +259,7 @@ WorldWindow::handle(int event)
     switch ( event )
     {
       case FL_PUSH:
+		wheel = 0;
         button = Fl::event_button();
 	x_last = x_down = Fl::event_x();
 	y_last = y_down = Fl::event_y();
@@ -258,8 +275,7 @@ WorldWindow::handle(int event)
 	return 1;
       case FL_RELEASE:
         button = -1;
-	return 1;
-
+		return 1;
 	  case FL_KEYDOWN:
 		  keybutton = Fl::event_key();
 		  return 1;
@@ -277,4 +293,16 @@ WorldWindow::handle(int event)
     return Fl_Gl_Window::handle(event);
 }
 
-
+/*
+void
+WorldWindow::coasterInfo(const Track &t) {
+	for (int i = 0; i < t.posnvals[0].size(); i++) {
+		coasterPos[0][i] = t.posnvals[0][i];
+		coasterPos[1][i] = t.posnvals[1][i];
+		coasterPos[2][i] = t.posnvals[2][i];
+		coasterAng[0][i] = t.tangentvals[0][i];
+		coasterAng[1][i] = t.tangentvals[1][i];
+		coasterAng[2][i] = t.tangentvals[2][i];
+	}
+}
+*/

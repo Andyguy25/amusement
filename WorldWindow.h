@@ -13,6 +13,7 @@
 
 #include <Fl/Fl.h>
 #include <Fl/Fl_Gl_Window.h>
+#include <vector>
 #include "Ground.h"
 #include "Track.h"
 
@@ -34,6 +35,10 @@ class WorldWindow : public Fl_Gl_Window {
 	// Update the world according to any events that have happened since
 	// the last time this method was called.
 	bool	Update(float);
+
+	//void coasterInfo(const Track &t);
+	//std::vector<float> coasterPos[3];
+	//std::vector<float> coasterAng[3];
 
 	//stop to tell train to stop
 	int camAngle;
