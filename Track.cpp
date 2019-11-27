@@ -22,7 +22,7 @@ const float Track::TRACK_CONTROLS[TRACK_NUM_CONTROLS][3] =
 const int   Track::TRACK_NUM_CONTROLS = 15;
 const float Track::TRACK_CONTROLS[TRACK_NUM_CONTROLS][3] =
 { {45.0,30.0,40.0},{40.0,35.0,38.0},{35.0,30.0,36.0},{40.0,25.0,34.0},{45.0,30.0,32.0},
-  {40.0,35.0,30.0},{35.0,30.0,28.0},{40.0,25.0,26.0},{42.0,31.0,25.0},{-10.0,30.0,15.0},
+  {40.0,35.0,30.0},{35.0,30.0,28.0},{40.0,25.0,26.0},{45.0,35.0,25.0},{-10.0,30.0,15.0},
   {-17.0,15.0,22.0},{-16.0,-25.0,17.0},{2.0,-23.0,12.0},{39.0,-10.0,30.0},{42.0,-1.0,40.0}
 };
 
@@ -367,13 +367,6 @@ Track::Draw(void)
 		angle = asin(-tangentvals[2][dfc]) * 180.0 / M_PI;
 	}
 	glRotatef((float)angle, 0.0f, 1.0f, 0.0f);
-	
-	/*glTranslatef(posnvals[0][0], posnvals[1][0], posnvals[2][0]);
-	angle = atan2(tangentvals[1][0], tangentvals[0][0]) * 180.0 / M_PI;
-	glRotatef((float)angle, 0.0f, 0.0f, 1.0f);
-	angle = asin(-tangentvals[2][0]) * 180.0 / M_PI;
-	glRotatef((float)angle, 0.0f, 1.0f, 0.0f); 
-	*/
 
 	glCallList(train_list2);
 	
@@ -427,19 +420,3 @@ Track::Update(float dt)
 	speed = (float)sqrt(2.0 * ( TRAIN_ENERGY - 9.81 * point[2] ));
 
 }
-
-/*
-cartInfo 
-Track::getCartInfo(void){
-
-	cartInfo *cart;
-	for (int i = 0; i < posnvals.size(); i++) {
-		cart->posnvals = posnvals;
-	}
-
-	std::vector<float> posnvals[3] = {};
-	std::vector<float> tangentvals[3] = {};
-	const int maxLengthOfTrail = 100;
-	const int dfc = 7;  //distance from front cart
-}
-*/

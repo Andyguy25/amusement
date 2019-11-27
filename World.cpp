@@ -8,6 +8,7 @@
 #include <Fl/Fl.h>
 #include "WorldWindow.h"
 #include <stdio.h>
+#include <iostream>
 
 
 // The time per frame, in seconds (enforced only by timeouts.)
@@ -42,6 +43,11 @@ main(int argc, char *argv[])
     world_window->show(argc, argv);
 
     Fl::add_timeout(0.0, Timeout_Callback, NULL);
+
+	std::cout << "Camera Controls:\n"
+		<< " LEFT CTRL - front seat roller coaster\n"
+		<< " LEFT SHIFT - default move camera\n"
+		;
 
     return Fl::run();
 }

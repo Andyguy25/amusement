@@ -113,27 +113,12 @@ WorldWindow::draw(void)
 	}
 	
 	if (camAngle == 1) {
-		std::cout << "posn0: " << traintrack.posnvals[0][0] << " posn1: " << traintrack.posnvals[1][0]
-			<< " posn2: " << traintrack.posnvals[2][0] << " tan0: " << traintrack.tangentvals[0][0]
-			<< " tan1: " << traintrack.tangentvals[1][0] << " tan2: " << traintrack.tangentvals[2][0]
-			<< std::endl;
+		gluLookAt(traintrack.posnvals[0][2], traintrack.posnvals[1][2], traintrack.posnvals[2][2]+2,
+			traintrack.posnvals[0][0], traintrack.posnvals[1][0], traintrack.posnvals[2][0]+1.9, traintrack.tangentvals[0][1],
+			traintrack.tangentvals[1][1], traintrack.tangentvals[2][1]);
 
-		float angle = atan2(traintrack.tangentvals[1][0], traintrack.tangentvals[0][0]) * 180.0 / M_PI;
-		float secAng = asin(-traintrack.tangentvals[2][0]) * 180.0 / M_PI;
-		std::cout << " angle: " << angle << " secAng: " << secAng << std::endl;
-
-		gluLookAt(eye[0], eye[1], eye[2], x_at, y_at, 2.0, 0.0, 0.0, 1.0);
-		std::cout << "eye0: " << eye[0] << " eye1: " << eye[1] << " eye2: " << eye[2] << " x_at: " << x_at
-			<< " y_at: " << y_at << std::endl << std::endl;
+		
 	}
-
-	//next test, make a new object that is struct of (6) vectors, use it for new
-	//carts, and for the camera
-	//gluLookAt(50, 0, 60, 10, 0, 2.0, 0.0, 0.0, 1.0);
-	
-
-
-
 
     // Position the light source. This has to happen after the viewing
     // transformation is set up, so that the light stays fixed in world
@@ -198,20 +183,14 @@ WorldWindow::keyControl(float dt) {
 	switch (keybutton)
 	{
 	case FL_Control_L:
-		printf("left control\n");
 		camAngle = 1;
 		return;
-		break;
 	case FL_Shift_L:
-		printf("left shift\n");
 		camAngle = 0;
 		return;
-		break;
 	default:
 		return;
-		break;
 	}
-	return;
 }
 
 void
@@ -292,17 +271,3 @@ WorldWindow::handle(int event)
     // Pass any other event types on the superclass.
     return Fl_Gl_Window::handle(event);
 }
-
-/*
-void
-WorldWindow::coasterInfo(const Track &t) {
-	for (int i = 0; i < t.posnvals[0].size(); i++) {
-		coasterPos[0][i] = t.posnvals[0][i];
-		coasterPos[1][i] = t.posnvals[1][i];
-		coasterPos[2][i] = t.posnvals[2][i];
-		coasterAng[0][i] = t.tangentvals[0][i];
-		coasterAng[1][i] = t.tangentvals[1][i];
-		coasterAng[2][i] = t.tangentvals[2][i];
-	}
-}
-*/

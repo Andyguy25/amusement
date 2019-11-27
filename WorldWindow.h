@@ -36,11 +36,6 @@ class WorldWindow : public Fl_Gl_Window {
 	// the last time this method was called.
 	bool	Update(float);
 
-	//void coasterInfo(const Track &t);
-	//std::vector<float> coasterPos[3];
-	//std::vector<float> coasterAng[3];
-
-	//stop to tell train to stop
 	int camAngle;
 
     private:

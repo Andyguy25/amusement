@@ -80,16 +80,16 @@ Ground::Initialize(void)
 	glBegin(GL_QUADS);
 
 		glTexCoord2f(10.0, 10.0);
-		glVertex3f(50.0, 50.0, 0.0);
+		glVertex3f(100.0, 100.0, 0.0);
 
 		glTexCoord2f(0.0, 10.0);
-		glVertex3f(-50.0, 50.0, 0.0);
+		glVertex3f(-100.0, 100.0, 0.0);
 
 		glTexCoord2f(0.0, 0.0);
-		glVertex3f(-50.0, -50.0, 0.0);
+		glVertex3f(-100.0, -100.0, 0.0);
 
 		glTexCoord2f(10.0, 0.0);
-		glVertex3f(50.0, -50.0, 0.0);
+		glVertex3f(100.0, -100.0, 0.0);
 
 	glEnd();
 
