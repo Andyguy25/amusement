@@ -15,14 +15,10 @@
 #include <iostream>
 
 // The control points for the track spline.
-/*const int   Track::TRACK_NUM_CONTROLS = 4;
-const float Track::TRACK_CONTROLS[TRACK_NUM_CONTROLS][3] =
-		{ { -20.0, -20.0, -18.0 }, { 20.0, -20.0, 40.0 },
-		  { 20.0, 20.0, -18.0 }, { -20.0, 20.0, 40.0 } };*/
 const int   Track::TRACK_NUM_CONTROLS = 15;
 const float Track::TRACK_CONTROLS[TRACK_NUM_CONTROLS][3] =
-{ {45.0,30.0,40.0},{40.0,35.0,38.0},{35.0,30.0,36.0},{40.0,25.0,34.0},{45.0,30.0,32.0},
-  {40.0,35.0,30.0},{35.0,30.0,28.0},{40.0,25.0,26.0},{45.0,35.0,25.0},{-10.0,30.0,15.0},
+{ {55.0,38.0,40.0},{45.0,45.0,38.0},{35.0,30.0,36.0},{45.0,20.0,34.0},{52.0,30.0,32.0},
+  {45.0,35.0,30.0},{38.0,30.0,28.0},{45.0,25.0,26.0},{50.0,35.0,25.0},{-10.0,30.0,15.0},
   {-17.0,15.0,22.0},{-16.0,-25.0,17.0},{2.0,-23.0,12.0},{39.0,-10.0,30.0},{42.0,-1.0,40.0}
 };
 
@@ -52,6 +48,7 @@ Track::~Track(void)
     {
 	glDeleteLists(track_list, 1);
 	glDeleteLists(train_list, 1);
+	glDeleteLists(trackpole, 1);
     }
 }
 
@@ -87,7 +84,11 @@ Track::Initialize(void)
 	    {
 		refined.Evaluate_Point((float)i, p);
 		glVertex3fv(p);
+		refinetrackpos[0].push_back(p[0]);
+		refinetrackpos[1].push_back(p[1]);
+		refinetrackpos[2].push_back(p[2]);
 	    }
+
 	glEnd();
     glEndList();
 
@@ -188,6 +189,61 @@ Track::Initialize(void)
 	glDisable(GL_TEXTURE_2D);
     glEndList();
 
+
+	/////////trackpole
+	trackpole = glGenLists(1);
+	glNewList(trackpole, GL_COMPILE);
+	glColor3f(0.75, 0.75, 0.75);
+
+	glBegin(GL_QUADS);
+
+	//top
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(0.1f, 0.1f, 1.0f);
+	glVertex3f(0.0f, 0.1f, 1.0f);
+	glVertex3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(0.1f, 0.0f, 1.0f);
+
+	//bottom
+	glNormal3f(0.0f, 0.0f, -1.0f);
+	glVertex3f(0.1f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.1f, 0.0f);
+	glVertex3f(0.1f, 0.1f, 0.0f);
+
+	//right
+	glNormal3f(0.1f, 0.0f, 0.0f);
+	glVertex3f(0.1f, 0.0f, 0.0f);
+	glVertex3f(0.1f, 0.1f, 0.0f);
+	glVertex3f(0.1f, 0.1f, 1.0f);
+	glVertex3f(0.1f, 0.0f, 1.0f);
+
+	//left
+	glNormal3f(-1.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.1f, 1.0f);
+	glVertex3f(0.0f, 0.1f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 1.0f);
+
+	//far
+	glNormal3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.1f, 0.1f, 1.0f);
+	glVertex3f(0.1f, 0.1f, 0.0f);
+	glVertex3f(0.0f, 0.1f, 0.0f);
+	glVertex3f(0.0f, 0.1f, 1.0f);
+
+	//near
+	glNormal3f(0.0f, -1.0f, 0.0f);
+	glVertex3f(0.1f, 0.0f, 0.0f);
+	glVertex3f(0.1f, 0.0f, 1.0f);
+	glVertex3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+
+	glEnd();
+	glEndList();
+
+
+
     initialized = true;
 
     return true;
@@ -209,6 +265,17 @@ Track::Draw(void)
 
     // Draw the track
     glCallList(track_list);
+
+
+	for (int i = 0; i < refinetrackpos[0].size(); i++) {
+		if (i % 7 == 0) {
+			glPushMatrix();
+			glTranslatef(refinetrackpos[0][i], refinetrackpos[1][i], 0.0);
+			glScalef(1.0, 1.0, refinetrackpos[2][i]);
+			glCallList(trackpole);
+			glPopMatrix();
+		}
+	}
 
     glPushMatrix();
 

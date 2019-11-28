@@ -16,6 +16,7 @@ class Track {
   private:
     GLubyte 	    track_list;	    // The display list for the track.
     GLubyte 	    train_list;	    // The display list for the train.
+	GLubyte			trackpole;
 	GLuint			traintext;
 
     bool    	    initialized;    // Whether or not we have been initialized.
@@ -45,17 +46,8 @@ class Track {
 
 	std::vector<float> posnvals[3];
 	std::vector<float> tangentvals[3];
-
-	//cartInfo	getCartInfo(void);
+	std::vector<float> refinetrackpos[3];
 };
 
-/*
-struct cartInfo {
-	std::vector<float> posnvals[3];
-	std::vector<float> tangentvals[3];
-	const int maxLengthOfTrail = 100;
-	const int dfc = 7;  //distance from front cart
-};
-*/
 #endif
 

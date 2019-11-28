@@ -9,6 +9,7 @@ BillBoard::~BillBoard(void)
 	if (initialized)
 	{
 		glDeleteLists(display_list, 1);
+		glDeleteLists(stand, 1);
 		glDeleteTextures(1, &texture_obj);
 	}
 }
@@ -19,10 +20,10 @@ BillBoard::Initialize(void)
 	ubyte *image_data;
 	int image_height, image_width;
 
-	if (!(image_data = (ubyte*)tga_load("mcgrass.tga", &image_width,
+	if (!(image_data = (ubyte*)tga_load("disneysign.tga", &image_width,
 		&image_height, TGA_TRUECOLOR_24)))
 	{
-		fprintf(stderr, "Ground::Initialize: Couldn't load grass.tga\n");
+		fprintf(stderr, "Ground::Initialize: Couldn't load disneysign.tga\n");
 		return false;
 	}
 
@@ -42,54 +43,105 @@ BillBoard::Initialize(void)
 	glColor3f(1.0, 1.0, 1.0);
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, texture_obj);
-
 	glBegin(GL_QUADS);
 
 	//top
 	glNormal3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(1.0f, 30.0f, 30.0f);
-	glVertex3f(0.0f, 30.0f, 30.0f);
-	glVertex3f(0.0f, 0.0f, 30.0f);
-	glVertex3f(1.0f, 0.0f, 30.0f);
+	glVertex3f(1.0f, 40.0f, 20.0f);
+	glVertex3f(0.0f, 40.0f, 20.0f);
+	glVertex3f(0.0f, 0.0f, 20.0f);
+	glVertex3f(1.0f, 0.0f, 20.0f);
 	
 	//bottom
 	glNormal3f(0.0f, 0.0f, -1.0f);
-	glVertex3f(1.0f, 0.0f, 10.0f);
-	glVertex3f(0.0f, 0.0f, 10.0f);
-	glVertex3f(0.0f, 30.0f, 10.0f);
-	glVertex3f(1.0f, 30.0f, 10.0f);
+	glVertex3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 40.0f, 0.0f);
+	glVertex3f(1.0f, 40.0f, 0.0f);
 
-	//right
+	//right (front of billboard)
 	glNormal3f(1.0f, 0.0f, 0.0f);
-	glVertex3f(1.0f, 0.0f, 10.0f);
-	glVertex3f(1.0f, 0.0f, 30.0f);
-	glVertex3f(1.0f, 30.0f, 30.0f);
-	glVertex3f(1.0f, 30.0f, 10.0f);
-
+	glTexCoord2f(0.0, 0.0); glVertex3f(1.0f, 0.0f, 0.0f);
+	glTexCoord2f(1.0, 0.0); glVertex3f(1.0f, 40.0f, 0.0f);
+	glTexCoord2f(1.0, 1.0); glVertex3f(1.0f, 40.0f, 20.0f);
+	glTexCoord2f(0.0, 1.0); glVertex3f(1.0f, 0.0f, 20.0f);
+	
 	//left
 	glNormal3f(-1.0f, 0.0f, 0.0f);
-	glVertex3f(-0.5f, 0.5f, 30.0f);
-	glVertex3f(-0.5f, 0.5f, 10.0f);
-	glVertex3f(-0.5f, -0.5f, 10.0f);
-	glVertex3f(-0.5f, -0.5f, 30.0f);
+	glTexCoord2f(0.0, 1.0); glVertex3f(0.0f, 40.0f, 20.0f);
+	glTexCoord2f(0.0, 0.0); glVertex3f(0.0f, 40.0f, 0.0f);
+	glTexCoord2f(1.0, 0.0); glVertex3f(0.0f, 0.0f, 0.0f);
+	glTexCoord2f(1.0, 1.0); glVertex3f(0.0f, 0.0f, 20.0f);
 
 	//far
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glVertex3f(0.5f, 0.5f, 30.0f);
-	glVertex3f(0.5f, 0.5f, 10.0f);
-	glVertex3f(-0.5f, 0.5f, 10.0f);
-	glVertex3f(-0.5f, 0.5f, 30.0f);
+	glVertex3f(1.0f, 40.0f, 20.0f);
+	glVertex3f(1.0f, 40.0f, 0.0f);
+	glVertex3f(0.0f, 40.0f, 0.0f);
+	glVertex3f(0.0f, 40.0f, 20.0f);
 
 	//near
 	glNormal3f(0.0f, -1.0f, 0.0f);
-	glVertex3f(0.5f, -0.5f, 10.0f);
-	glVertex3f(0.5f, -0.5f, 30.0f);
-	glVertex3f(-0.5f, -0.5f, 30.0f);
-	glVertex3f(-0.5f, -0.5f, 10.0f);
+	glVertex3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 20.0f);
+	glVertex3f(0.0f, 0.0f, 20.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
 
 	glEnd();
-
 	glDisable(GL_TEXTURE_2D);
+	glEndList();
+
+
+
+
+	///////for stand now
+	stand = glGenLists(1);
+	glNewList(stand, GL_COMPILE);
+	glColor3f(0.5859, 0.2929, 0.0);
+	glBegin(GL_QUADS);
+
+	//top
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(1.0f, 1.0f, 30.0f);
+	glVertex3f(0.0f, 1.0f, 30.0f);
+	glVertex3f(0.0f, 0.0f, 30.0f);
+	glVertex3f(1.0f, 0.0f, 30.0f);
+
+	//bottom
+	glNormal3f(0.0f, 0.0f, -1.0f);
+	glVertex3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(1.0f, 1.0f, 0.0f);
+
+	//right
+	glNormal3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 1.0f, 0.0f);
+	glVertex3f(1.0f, 1.0f, 30.0f);
+	glVertex3f(1.0f, 0.0f, 30.0f);
+
+	//left
+	glNormal3f(-1.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 1.0f, 30.0f);
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 30.0f);
+
+	//far
+	glNormal3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(1.0f, 1.0f, 30.0f);
+	glVertex3f(1.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, 1.0f, 30.0f);
+
+	//near
+	glNormal3f(0.0f, -1.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 30.0f);
+	glVertex3f(0.0f, 0.0f, 30.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glEnd();
 	glEndList();
 
 	initialized = true;
@@ -101,6 +153,16 @@ void
 BillBoard::Draw(void)
 {
 	glPushMatrix();
+	glTranslatef(-70.0,0.0,10.0);
+	glScalef(1.0, 1.5, 1.5);
 	glCallList(display_list);
+	
+	glPushMatrix();
+	glTranslatef(-1.0, 0.0, -10.0);
+	glCallList(stand);
+
+	glTranslatef(0.0, 39.0, 0.0);
+	glCallList(stand);
+	glPopMatrix();
 	glPopMatrix();
 }

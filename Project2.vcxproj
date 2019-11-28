@@ -99,6 +99,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BillBoard.cpp" />
     <ClCompile Include="CubicBspline.cpp" />
     <ClCompile Include="GenericException.cpp" />
     <ClCompile Include="Ground.cpp" />
@@ -112,6 +113,7 @@
     <ClCompile Include="WorldWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BillBoard.h" />
     <ClInclude Include="CubicBspline.h" />
     <ClInclude Include="GenericException.h" />
     <ClInclude Include="Ground.h" />
