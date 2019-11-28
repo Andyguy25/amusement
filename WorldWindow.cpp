@@ -114,11 +114,15 @@ WorldWindow::draw(void)
 	}
 	
 	if (camAngle == 1) {
-		gluLookAt(traintrack.posnvals[0][2], traintrack.posnvals[1][2], traintrack.posnvals[2][2]+2,
-			traintrack.posnvals[0][0], traintrack.posnvals[1][0], traintrack.posnvals[2][0]+1.9, traintrack.tangentvals[0][1],
-			traintrack.tangentvals[1][1], traintrack.tangentvals[2][1]);
+		gluLookAt(traintrack.posnvals[0][1], traintrack.posnvals[1][1], traintrack.posnvals[2][1]+2,
+			traintrack.posnvals[0][0], traintrack.posnvals[1][0], traintrack.posnvals[2][0]+1.9,
+			traintrack.tangentvals[0][0], traintrack.tangentvals[1][0], traintrack.tangentvals[2][0]);
+	}
 
-		
+	if (camAngle == 2) {
+		gluLookAt(traintrack.posnvals[0][traintrack.maxLengthOfTrail-2], traintrack.posnvals[1][traintrack.maxLengthOfTrail-2], traintrack.posnvals[2][traintrack.maxLengthOfTrail-2] + 2,
+			traintrack.posnvals[0][traintrack.maxLengthOfTrail-(traintrack.dfc*2)], traintrack.posnvals[1][traintrack.maxLengthOfTrail- (traintrack.dfc*2)], traintrack.posnvals[2][traintrack.maxLengthOfTrail- (traintrack.dfc*2)]+1,
+			traintrack.tangentvals[0][traintrack.maxLengthOfTrail - 2], traintrack.tangentvals[1][traintrack.maxLengthOfTrail - 2], traintrack.tangentvals[2][traintrack.maxLengthOfTrail - 2]+2);
 	}
 
     // Position the light source. This has to happen after the viewing
@@ -189,6 +193,9 @@ WorldWindow::keyControl(float dt) {
 		return;
 	case FL_Shift_L:
 		camAngle = 0;
+		return;
+	case FL_Tab:
+		camAngle = 2;
 		return;
 	default:
 		return;

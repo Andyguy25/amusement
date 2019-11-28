@@ -47,6 +47,7 @@ main(int argc, char *argv[])
 	std::cout << "Camera Controls:\n"
 		<< " LEFT CTRL - front seat roller coaster\n"
 		<< " LEFT SHIFT - default move camera\n"
+		<< " TAB - back of roller coaster\n"
 		;
 
     return Fl::run();

@@ -24,8 +24,8 @@ class Track {
     float	    posn_on_track;  // The train's parametric position on the
 				    // track.
 	
-	const int maxLengthOfTrail = 100;
-	const int dfc = 7;  //distance from front cart
+	
+	
 
     float	    speed;	    // The train's speed, in world coordinates
 
@@ -47,6 +47,8 @@ class Track {
 	std::vector<float> posnvals[3];
 	std::vector<float> tangentvals[3];
 	std::vector<float> refinetrackpos[3];
+	const int maxLengthOfTrail = 100;
+	const int dfc = 7;  //distance from front cart
 };
 
 #endif

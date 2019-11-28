@@ -152,38 +152,70 @@ Track::Initialize(void)
 	//right  (front of coaster)
 	glNormal3f(1.0f, 0.0f, 0.0f);
 	glVertex3f(0.5f, 0.5f, 0.0f);
-	glVertex3f(0.5f, 0.5f, 0.6f);
-	glVertex3f(0.5f, -0.5f, 0.6f);
+	glVertex3f(0.5f, 0.5f, 1.0f);
+	glVertex3f(0.5f, -0.5f, 1.0f);
 	glVertex3f(0.5f, -0.5f, 0.0f);
+	//right inside (front of coaster)
+	glNormal3f(-1.0f, 0.0f, 0.0f);
+	glColor3f(0.1, 0.1, 0.1);
+	glVertex3f(0.5f, 0.5f, 0.0f);
+	glVertex3f(0.5f, -0.5f, 0.0f);
+	glVertex3f(0.5f, -0.5f, 1.0f);
+	glVertex3f(0.5f, 0.5f, 1.0f);
+	glColor3f(1.0, 1.0, 1.0);
 
 	//left
 	glNormal3f(-1.0f, 0.0f, 0.0f);
-	glVertex3f(-0.5f, 0.5f, 0.6f);
+	glVertex3f(-0.5f, 0.5f, 1.0f);
 	glVertex3f(-0.5f, 0.5f, 0.0f);
 	glVertex3f(-0.5f, -0.5f, 0.0f);
-	glVertex3f(-0.5f, -0.5f, 0.6f);
+	glVertex3f(-0.5f, -0.5f, 1.0f);
+	//left inside
+	glNormal3f(1.0f, 0.0f, 0.0f);
+	glColor3f(0.1, 0.1, 0.1);
+	glVertex3f(-0.5f, -0.5f, 1.0f);
+	glVertex3f(-0.5f, -0.5f, 0.0f);
+	glVertex3f(-0.5f, 0.5f, 0.0f);
+	glVertex3f(-0.5f, 0.5f, 1.0f);
+	glColor3f(1.0, 1.0, 1.0);
 
 	//far
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2f(1.0, 0.0);
-	glVertex3f(0.5f, 0.5f, 0.6f);
+	glVertex3f(0.5f, 0.5f, 1.0f);
 	glTexCoord2f(1.0, 1.0);
 	glVertex3f(0.5f, 0.5f, 0.0f);
 	glTexCoord2f(0.0, 1.0);
 	glVertex3f(-0.5f, 0.5f, 0.0f);
 	glTexCoord2f(0.0, 0.0);
-	glVertex3f(-0.5f, 0.5f, 0.6f);
+	glVertex3f(-0.5f, 0.5f, 1.0f);
+	//far inside
+	glNormal3f(0.0f, -1.0f, 0.0f);
+	glColor3f(0.1, 0.1, 0.1);
+	glVertex3f(-0.5f, 0.5f, 1.0f);
+	glVertex3f(-0.5f, 0.5f, 0.0f);
+	glVertex3f(0.5f, 0.5f, 0.0f);
+	glVertex3f(0.5f, 0.5f, 1.0f);
+	glColor3f(1.0, 1.0, 1.0);
 
 	//near
 	glNormal3f(0.0f, -1.0f, 0.0f);
 	glTexCoord2f(1.0, 1.0);
 	glVertex3f(0.5f, -0.5f, 0.0f);
 	glTexCoord2f(0.0, 1.0);
-	glVertex3f(0.5f, -0.5f, 0.6f);
+	glVertex3f(0.5f, -0.5f, 1.0f);
 	glTexCoord2f(0.0, 0.0);
-	glVertex3f(-0.5f, -0.5f, 0.6f);
+	glVertex3f(-0.5f, -0.5f, 1.0f);
 	glTexCoord2f(1.0, 0.0);
 	glVertex3f(-0.5f, -0.5f, 0.0f);
+	//near inside
+	glNormal3f(0.0f, 1.0f, 0.0f);
+	glColor3f(0.1, 0.1, 0.1);
+	glVertex3f(-0.5f, -0.5f, 0.0f);
+	glVertex3f(-0.5f, -0.5f, 1.0f);
+	glVertex3f(0.5f, -0.5f, 1.0f);
+	glVertex3f(0.5f, -0.5f, 0.0f);
+	glColor3f(1.0, 1.0, 1.0);
 
     glEnd();
 	glDisable(GL_TEXTURE_2D);
@@ -268,7 +300,7 @@ Track::Draw(void)
 
 
 	for (int i = 0; i < refinetrackpos[0].size(); i++) {
-		if (i % 7 == 0) {
+		if (i % 10 == 0) {
 			glPushMatrix();
 			glTranslatef(refinetrackpos[0][i], refinetrackpos[1][i], 0.0);
 			glScalef(1.0, 1.0, refinetrackpos[2][i]);
@@ -327,32 +359,35 @@ Track::Draw(void)
 	
 	////////////////////////////////////////////
 	glPopMatrix();
-	
-	if (posnvals[0].size() < dfc+1) {
-		glTranslatef(posnvals[0][0], posnvals[1][0], posnvals[2][0]);
-	}
-	else {
-		glTranslatef(posnvals[0][dfc], posnvals[1][dfc], posnvals[2][dfc]);
-	}
+	int amountOfCarts = floor(maxLengthOfTrail / dfc);
+	for (int i = 1; i < amountOfCarts; i++) {
+		glPushMatrix();
+		if (posnvals[0].size() < ((dfc*i) + 1)) {
+			glTranslatef(posnvals[0][0], posnvals[1][0], posnvals[2][0]);
+		}
+		else {
+			glTranslatef(posnvals[0][dfc*i], posnvals[1][dfc*i], posnvals[2][dfc*i]);
+		}
 
-	if (tangentvals[0].size() < dfc+1) {
-		angle = atan2(tangent[1], tangent[0]) * 180.0 / M_PI;
-	}
-	else {
-		angle = atan2(tangentvals[1][dfc], tangentvals[0][dfc]) * 180.0 / M_PI;
-	}
-	glRotatef((float)angle, 0.0f, 0.0f, 1.0f);
+		if (tangentvals[0].size() < (dfc*i) + 1) {
+			angle = atan2(tangent[1], tangent[0]) * 180.0 / M_PI;
+		}
+		else {
+			angle = atan2(tangentvals[1][dfc*i], tangentvals[0][dfc*i]) * 180.0 / M_PI;
+		}
+		glRotatef((float)angle, 0.0f, 0.0f, 1.0f);
 
-	if (tangentvals[0].size() < dfc+1) {
-		angle = asin(-tangent[2]) * 180.0 / M_PI;
-	}
-	else {
-		angle = asin(-tangentvals[2][dfc]) * 180.0 / M_PI;
-	}
-	glRotatef((float)angle, 0.0f, 1.0f, 0.0f);
+		if (tangentvals[0].size() < (dfc*i) + 1) {
+			angle = asin(-tangent[2]) * 180.0 / M_PI;
+		}
+		else {
+			angle = asin(-tangentvals[2][dfc*i]) * 180.0 / M_PI;
+		}
+		glRotatef((float)angle, 0.0f, 1.0f, 0.0f);
 
-	glCallList(train_list);
-	
+		glCallList(train_list);
+		glPopMatrix();
+	}
 	///////////////////////////////////////////
     glPopMatrix();
     glPopMatrix();
