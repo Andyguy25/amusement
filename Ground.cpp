@@ -34,7 +34,7 @@ Ground::Initialize(void)
     if ( ! ( image_data = (ubyte*)tga_load("mcgrass.tga", &image_width,
 					   &image_height, TGA_TRUECOLOR_24) ) )
     {
-	fprintf(stderr, "Ground::Initialize: Couldn't load grass.tga\n");
+	fprintf(stderr, "Ground::Initialize: Couldn't load mcgrass.tga\n");
 	return false;
     }
 

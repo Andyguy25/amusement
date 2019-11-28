@@ -188,73 +188,6 @@ Track::Initialize(void)
 	glDisable(GL_TEXTURE_2D);
     glEndList();
 
-
-	//second cart
-
-	train_list2 = glGenLists(1);
-	glNewList(train_list2, GL_COMPILE);
-	glColor3f(1.0, 1.0, 1.0);
-
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, traintext);
-
-	glBegin(GL_QUADS);
-
-	//top    (top of coaster)
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(0.5f, 0.5f, 0.6f);
-	glVertex3f(-0.5f, 0.5f, 0.6f);
-	glVertex3f(-0.5f, -0.5f, 0.6f);
-	glVertex3f(0.5f, -0.5f, 0.6f);
-
-	//bottom
-	glNormal3f(0.0f, 0.0f, -1.0f);
-	glVertex3f(0.5f, -0.5f, 0.0f);
-	glVertex3f(-0.5f, -0.5f, 0.0f);
-	glVertex3f(-0.5f, 0.5f, 0.0f);
-	glVertex3f(0.5f, 0.5f, 0.0f);
-
-	//right  (front of coaster)
-	glNormal3f(1.0f, 0.0f, 0.0f);
-
-	glVertex3f(0.5f, 0.5f, 0.0f);
-	glVertex3f(0.5f, 0.5f, 0.6f);
-	glVertex3f(0.5f, -0.5f, 0.6f);
-	glVertex3f(0.5f, -0.5f, 0.0f);
-
-	//left
-	glNormal3f(-1.0f, 0.0f, 0.0f);
-	glVertex3f(-0.5f, 0.5f, 0.6f);
-	glVertex3f(-0.5f, 0.5f, 0.0f);
-	glVertex3f(-0.5f, -0.5f, 0.0f);
-	glVertex3f(-0.5f, -0.5f, 0.6f);
-
-	//far
-	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2f(1.0, 0.0);
-	glVertex3f(0.5f, 0.5f, 0.6f);
-	glTexCoord2f(1.0, 1.0);
-	glVertex3f(0.5f, 0.5f, 0.0f);
-	glTexCoord2f(0.0, 1.0);
-	glVertex3f(-0.5f, 0.5f, 0.0f);
-	glTexCoord2f(0.0, 0.0);
-	glVertex3f(-0.5f, 0.5f, 0.6f);
-
-	//near
-	glNormal3f(0.0f, -1.0f, 0.0f);
-	glTexCoord2f(1.0, 1.0);
-	glVertex3f(0.5f, -0.5f, 0.0f);
-	glTexCoord2f(0.0, 1.0);
-	glVertex3f(0.5f, -0.5f, 0.6f);
-	glTexCoord2f(0.0, 0.0);
-	glVertex3f(-0.5f, -0.5f, 0.6f);
-	glTexCoord2f(1.0, 0.0);
-	glVertex3f(-0.5f, -0.5f, 0.0f);
-
-	glEnd();
-	glDisable(GL_TEXTURE_2D);
-	glEndList();
-
     initialized = true;
 
     return true;
@@ -294,13 +227,7 @@ Track::Draw(void)
 
     // Translate the train to the point
 
-	//if (posnvals[0].size() < maxLengthOfTrail-2) {
-		glTranslatef(posn[0], posn[1], posn[2]);
-	/*}
-	else {
-		glTranslatef(posnvals[0][100], posnvals[1][100], posnvals[2][100]);
-	}*/
-
+	glTranslatef(posn[0], posn[1], posn[2]);
 
     // ...and what it's orientation is
     track->Evaluate_Derivative(posn_on_track, tangent);
@@ -317,23 +244,13 @@ Track::Draw(void)
 	}
 
     // Rotate it to poitn along the track, but stay horizontal
-	//if (tangentvals[0].size() < maxLengthOfTrail - 2) {
 		angle = atan2(tangent[1], tangent[0]) * 180.0 / M_PI;
-	/*}
-	else {
-		angle = atan2(tangentvals[1][100], tangentvals[0][100]) * 180.0 / M_PI;
-	}*/
+	
     glRotatef((float)angle, 0.0f, 0.0f, 1.0f);
 	
-	
-
     // Another rotation to get the tilt right.
-	//if (tangentvals[0].size() < maxLengthOfTrail - 2) {
 		angle = asin(-tangent[2]) * 180.0 / M_PI;
-	/*}
-	else {
-		angle = asin(-tangentvals[2][100]) * 180.0 / M_PI;
-	}*/
+	
     glRotatef((float)angle, 0.0f, 1.0f, 0.0f);
 
 	
@@ -342,7 +259,6 @@ Track::Draw(void)
     glCallList(train_list);
 	
 	////////////////////////////////////////////
-	//glPushMatrix();
 	glPopMatrix();
 	
 	if (posnvals[0].size() < dfc+1) {
@@ -368,9 +284,8 @@ Track::Draw(void)
 	}
 	glRotatef((float)angle, 0.0f, 1.0f, 0.0f);
 
-	glCallList(train_list2);
+	glCallList(train_list);
 	
-	//glPopMatrix();
 	///////////////////////////////////////////
     glPopMatrix();
     glPopMatrix();

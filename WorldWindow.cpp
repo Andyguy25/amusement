@@ -6,7 +6,7 @@
  * (c) Stephen Chenney, University of Wisconsin at Madison, 2001-2002
  *
  */
-////
+
 #include "Track.h"
 #include "WorldWindow.h"
 #include <Fl/math.h>
@@ -92,6 +92,7 @@ WorldWindow::draw(void)
 	// Initialize all the objects.
 	ground.Initialize();
 	traintrack.Initialize();
+	billboard.Initialize();
     }
 	
     // Stuff out here relies on a coordinate system or must be done on every
@@ -129,6 +130,7 @@ WorldWindow::draw(void)
     // Draw stuff. Everything.
     ground.Draw();
     traintrack.Draw();
+	billboard.Draw();
 }
 
 

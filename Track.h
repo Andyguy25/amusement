@@ -16,7 +16,6 @@ class Track {
   private:
     GLubyte 	    track_list;	    // The display list for the track.
     GLubyte 	    train_list;	    // The display list for the train.
-	GLubyte			train_list2;
 	GLuint			traintext;
 
     bool    	    initialized;    // Whether or not we have been initialized.
