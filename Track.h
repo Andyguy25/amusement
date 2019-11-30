@@ -18,6 +18,7 @@ class Track {
     GLubyte 	    train_list;	    // The display list for the train.
 	GLubyte			trackpole;
 	GLuint			traintext;
+	GLuint			tracktext;
 
     bool    	    initialized;    // Whether or not we have been initialized.
     CubicBspline    *track;	    // The spline that defines the track.
@@ -47,7 +48,7 @@ class Track {
 	std::vector<float> posnvals[3];
 	std::vector<float> tangentvals[3];
 	std::vector<float> refinetrackpos[3];
-	const int maxLengthOfTrail = 100;
+	const int maxLengthOfTrail = 50;
 	const int dfc = 7;  //distance from front cart
 };
 

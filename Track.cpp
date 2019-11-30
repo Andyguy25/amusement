@@ -14,13 +14,15 @@
 #include <vector>
 #include <iostream>
 
+
 // The control points for the track spline.
-const int   Track::TRACK_NUM_CONTROLS = 15;
+const int   Track::TRACK_NUM_CONTROLS = 13;
 const float Track::TRACK_CONTROLS[TRACK_NUM_CONTROLS][3] =
-{ {55.0,38.0,40.0},{45.0,45.0,38.0},{35.0,30.0,36.0},{45.0,20.0,34.0},{52.0,30.0,32.0},
-  {45.0,35.0,30.0},{38.0,30.0,28.0},{45.0,25.0,26.0},{50.0,35.0,25.0},{-10.0,30.0,15.0},
-  {-17.0,15.0,22.0},{-16.0,-25.0,17.0},{2.0,-23.0,12.0},{39.0,-10.0,30.0},{42.0,-1.0,40.0}
+{ {55.0,38.0,40.0},{35.0,45.0,38.0},{5.0,20.0,36.0},{35.0,15.0,34.0},{45.0,30.0,32.0},
+  {60.0,25.0,26.0},{70.0,55.0,25.0},{-10.0,75.0,15.0},
+  {-17.0,15.0,22.0},{-16.0,-25.0,17.0},{2.0,-23.0,12.0},{39.0,-10.0,30.0},{42.0,-1.0,45.0}
 };
+
 
 // The carriage energy and mass
 const float Track::TRAIN_ENERGY = 450.0f;
@@ -73,23 +75,207 @@ Track::Initialize(void)
     track->Refine_Tolerance(refined, 0.1f);
     n_refined = refined.N();
 
+
+	ubyte   *image_datat;
+	int	    image_heightt, image_widtht;
+
+
+	if (!(image_datat = (ubyte*)tga_load("road2.tga", &image_widtht,
+		&image_heightt, TGA_TRUECOLOR_24)))
+	{
+		fprintf(stderr, "Ground::Initialize: Couldn't load road2.tga\n");
+		return false;
+	}
+
+	glGenTextures(1, &tracktext);
+	glBindTexture(GL_TEXTURE_2D, tracktext);
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image_widtht, image_heightt,
+		GL_RGB, GL_UNSIGNED_BYTE, image_datat);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+		GL_LINEAR_MIPMAP_LINEAR);
+
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
     // Create the display list for the track - just a set of line segments
     // We just use curve evaluated at integer paramer values, because the
     // subdivision has made sure that these are good enough.
     track_list = glGenLists(1);
     glNewList(track_list, GL_COMPILE);
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glBegin(GL_LINE_STRIP);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, tracktext);
+	glColor3f(1.0f, 1.0f, 1.0f);
+	double points[2][4][3];
+	
+	int start_i = 0;
+	int end_i = 1;
+	int x = 0;
+	int y = 1;
+	int z = 2;
+	
+	refined.Evaluate_Point((float)n_refined-1, p);
+	
+	float lastPosx = p[0];
+	float lastPosy = p[1];
+	float lastPosz = p[2];
+
 	    for ( i = 0 ; i <= n_refined ; i++ )
 	    {
+
 		refined.Evaluate_Point((float)i, p);
-		glVertex3fv(p);
+
+		glBegin(GL_TRIANGLE_STRIP);
+		float currDirx = abs(p[0] - lastPosx);
+		float currDiry = abs(p[1] - lastPosy);
+		float currDirz = abs(p[2] - lastPosz);
+		float comboxy = currDirx + currDiry;
+
+		float dirx = p[0] - lastPosx;
+		float diry = p[1] - lastPosy;
+		float dirz = p[2] - lastPosz;
+		
+		for (int j = 0; j < 4; j++) {
+			if (j == 2) {
+				glTexCoord2f(1.0,0.0);
+			}
+			if (j == 3) {
+				glTexCoord2f(0.0, 0.0);
+			}
+			
+			glVertex3f(points[start_i][j][x], points[start_i][j][y], points[start_i][j][z]);
+			float movex = currDirx / comboxy;
+			float movey = currDiry / comboxy;
+
+			//bottom left of roller coaster track
+			if (j == 0) {
+				//>^
+				if (dirx >= 0 && diry >= 0) {
+					points[end_i][j][x] = p[0] + ((1 - movex)*-1.2);
+					points[end_i][j][y] = p[1] + ((1 - movey)*1.2);
+				}
+				//<^
+				if (dirx < 0 && diry >= 0) {
+					points[end_i][j][x] = p[0] + ((1 - movex)*-1.2);
+					points[end_i][j][y] = p[1] + ((1 - movey)*-1.2);
+				}
+				//<v
+				if (dirx < 0 && diry < 0) {
+					points[end_i][j][x] = p[0] + ((1 - movex)*1.2);
+					points[end_i][j][y] = p[1] + ((1 - movey)*-1.2);
+				}
+				//>v
+				if (dirx >= 0 && diry < 0) {
+					points[end_i][j][x] = p[0] + ((1 - movex)*1.2);
+					points[end_i][j][y] = p[1] + ((1 - movey)*1.2);
+				}
+				points[end_i][j][z] = p[2];
+			}
+			
+			//bottom right
+			if (j == 1) {
+				//>^
+				if (dirx >= 0 && diry >= 0) {
+					points[end_i][j][x] = p[0] + ((1 - movex)*1.2);
+					points[end_i][j][y] = p[1] + ((1 - movey)*-1.2);
+				}
+				//<^
+				if (dirx < 0 && diry >= 0) {
+					points[end_i][j][x] = p[0] + ((1 - movex)*1.2);
+					points[end_i][j][y] = p[1] + ((1 - movey)*1.2);
+				}
+				//<v
+				if (dirx < 0 && diry < 0) {
+					points[end_i][j][x] = p[0] + ((1 - movex)*-1.2);
+					points[end_i][j][y] = p[1] + ((1 - movey)*1.2);
+				}
+				//>v
+				if (dirx >= 0 && diry < 0) {
+					points[end_i][j][x] = p[0] + ((1 - movex)*-1.2);
+					points[end_i][j][y] = p[1] + ((1 - movey)*-1.2);
+				}
+				points[end_i][j][z] = p[2];
+			}
+
+			//top right
+			if (j == 2) {
+				//>^
+				if (dirx >= 0 && diry >= 0) {
+					points[end_i][j][x] = p[0] + ((1 - movex)*1.2);
+					points[end_i][j][y] = p[1] + ((1 - movey)*-1.2);
+				}
+				//<^
+				if (dirx < 0 && diry >= 0) {
+					points[end_i][j][x] = p[0] + ((1 - movex)*1.2);
+					points[end_i][j][y] = p[1] + ((1 - movey)*1.2);
+				}
+				//<v
+				if (dirx < 0 && diry < 0) {
+					points[end_i][j][x] = p[0] + ((1 - movex)*-1.2);
+					points[end_i][j][y] = p[1] + ((1 - movey)*1.2);
+				}
+				//>v
+				if (dirx >= 0 && diry < 0) {
+					points[end_i][j][x] = p[0] + ((1 - movex)*-1.2);
+					points[end_i][j][y] = p[1] + ((1 - movey)*-1.2);
+				}
+				points[end_i][j][z] = p[2]+0.2;
+			}
+
+			//top left
+			if (j == 3) {
+				//>^
+				if (dirx >= 0 && diry >= 0) {
+					points[end_i][j][x] = p[0] + ((1 - movex)*-1.2);
+					points[end_i][j][y] = p[1] + ((1 - movey)*1.2);
+				}
+				//<^
+				if (dirx < 0 && diry >= 0) {
+					points[end_i][j][x] = p[0] + ((1 - movex)*-1.2);
+					points[end_i][j][y] = p[1] + ((1 - movey)*-1.2);
+				}
+				//<v
+				if (dirx < 0 && diry < 0) {
+					points[end_i][j][x] = p[0] + ((1 - movex)*1.2);
+					points[end_i][j][y] = p[1] + ((1 - movey)*-1.2);
+				}
+				//>v
+				if (dirx >= 0 && diry < 0) {
+					points[end_i][j][x] = p[0] + ((1 - movex)*1.2);
+					points[end_i][j][y] = p[1] + ((1 - movey)*1.2);
+				}
+				points[end_i][j][z] = p[2]+0.2;
+			}
+			//glTexCoord2f(1.0, 1.0);
+			if (j == 2) {
+				glTexCoord2f(1.0, 1.0);
+			}
+			if (j == 3) {
+				glTexCoord2f(0.0, 1.0);
+			}
+
+			glVertex3f(points[end_i][j][x], points[end_i][j][y], points[end_i][j][z]);
+		}
+		glVertex3f(points[start_i][0][x], points[start_i][0][y], points[start_i][0][z]);
+		glVertex3f(points[end_i][0][x], points[end_i][0][y], points[end_i][0][z]);
+		glEnd();
+		int temp = start_i; start_i = end_i; end_i = temp;
+
+		lastPosx = p[0];
+		lastPosy = p[1];
+		lastPosz = p[2];
+
+
 		refinetrackpos[0].push_back(p[0]);
 		refinetrackpos[1].push_back(p[1]);
 		refinetrackpos[2].push_back(p[2]);
 	    }
 
-	glEnd();
+	glDisable(GL_TEXTURE_2D);
     glEndList();
 
 
@@ -102,7 +288,7 @@ Track::Initialize(void)
 	if (!(image_data = (ubyte*)tga_load("thundercar.tga", &image_width,
 		&image_height, TGA_TRUECOLOR_24)))
 	{
-		fprintf(stderr, "Ground::Initialize: Couldn't load .tga\n");
+		fprintf(stderr, "Ground::Initialize: Couldn't load thundercar.tga\n");
 		return false;
 	}
 	
@@ -360,7 +546,7 @@ Track::Draw(void)
 	////////////////////////////////////////////
 	glPopMatrix();
 	int amountOfCarts = floor(maxLengthOfTrail / dfc);
-	for (int i = 1; i < amountOfCarts; i++) {
+	for (int i = 1; i <= amountOfCarts; i++) {
 		glPushMatrix();
 		if (posnvals[0].size() < ((dfc*i) + 1)) {
 			glTranslatef(posnvals[0][0], posnvals[1][0], posnvals[2][0]);
