@@ -120,10 +120,13 @@ WorldWindow::draw(void)
 	}
 
 	if (camAngle == 2) {
-		int amountofcarts = floor(traintrack.maxLengthOfTrail / traintrack.dfc);
-		int lastCartPos = (amountofcarts * traintrack.dfc)-traintrack.dfc;
+		int realAmountOfCars = floor(traintrack.maxLengthOfTrail / traintrack.dfc);
+		if (traintrack.amountOfCars < realAmountOfCars) {
+			realAmountOfCars = traintrack.amountOfCars;
+		}
+		int lastCartPos = (realAmountOfCars * traintrack.dfc);
 		gluLookAt(traintrack.posnvals[0][lastCartPos], traintrack.posnvals[1][lastCartPos], traintrack.posnvals[2][lastCartPos] + 2,
-			traintrack.posnvals[0][lastCartPos-(traintrack.dfc*2)], traintrack.posnvals[1][lastCartPos - (traintrack.dfc*2)], traintrack.posnvals[2][lastCartPos - (traintrack.dfc*2)]+1,
+			traintrack.posnvals[0][lastCartPos-(2)], traintrack.posnvals[1][lastCartPos - (2)], traintrack.posnvals[2][lastCartPos - (2)]+1.8,
 			traintrack.tangentvals[0][lastCartPos], traintrack.tangentvals[1][lastCartPos], traintrack.tangentvals[2][lastCartPos]+2);
 	}
 
@@ -188,6 +191,7 @@ WorldWindow::Drag(float dt)
 
 void
 WorldWindow::keyControl(float dt) {
+int realAmountOfCars = floor(traintrack.maxLengthOfTrail / traintrack.dfc);
 	switch (keybutton)
 	{
 	case FL_Control_L:
@@ -197,10 +201,15 @@ WorldWindow::keyControl(float dt) {
 		camAngle = 0;
 		return;
 	case FL_Tab:
-		if (traintrack.posnvals->size() >= traintrack.maxLengthOfTrail-1) {
+		if (traintrack.amountOfCars < realAmountOfCars) {
+			realAmountOfCars = traintrack.amountOfCars;
+		}
+		if (traintrack.posnvals->size() >= (realAmountOfCars * traintrack.dfc)) {
 			camAngle = 2;
 		}
 		return;
+	case FL_Control_R:
+		traintrack.stop = true;
 	default:
 		return;
 	}
@@ -236,6 +245,7 @@ WorldWindow::Update(float dt)
 	}
 
     // Animate the train.
+	if(!traintrack.stop)
     traintrack.Update(dt);
 
     return true;
@@ -273,6 +283,7 @@ WorldWindow::handle(int event)
 		  return 1;
 	  case FL_KEYUP:
 		  keybutton = -1;
+		  traintrack.stop = false;
 		  return 1;
 
 	  case FL_MOUSEWHEEL:

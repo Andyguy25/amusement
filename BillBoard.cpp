@@ -92,8 +92,6 @@ BillBoard::Initialize(void)
 	glEndList();
 
 
-
-
 	///////for stand now
 	stand = glGenLists(1);
 	glNewList(stand, GL_COMPILE);

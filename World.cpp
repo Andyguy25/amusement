@@ -45,9 +45,10 @@ main(int argc, char *argv[])
     Fl::add_timeout(0.0, Timeout_Callback, NULL);
 
 	std::cout << "Camera Controls:\n"
-		<< " LEFT CTRL - front seat roller coaster\n"
+		<< " LEFT CTRL - front seat\n"
 		<< " LEFT SHIFT - default move camera\n"
-		<< " TAB - back of roller coaster\n"
+		<< " TAB - back seat\n"
+		<< " RIGHT CTRL - to stop\n"
 		;
 
     return Fl::run();

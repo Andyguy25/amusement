@@ -13,13 +13,14 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <time.h>
 
 
 // The control points for the track spline.
 const int   Track::TRACK_NUM_CONTROLS = 13;
 const float Track::TRACK_CONTROLS[TRACK_NUM_CONTROLS][3] =
-{ {55.0,38.0,40.0},{35.0,45.0,38.0},{5.0,20.0,36.0},{35.0,15.0,34.0},{45.0,30.0,32.0},
-  {60.0,25.0,26.0},{70.0,55.0,25.0},{-10.0,75.0,15.0},
+{ {55.0,38.0,40.0},{20.0,45.0,38.0},{15.0,15.0,36.0},{35.0,15.0,34.0},{45.0,30.0,32.0},
+  {60.0,25.0,30.0},{70.0,55.0,28.0},{-10.0,75.0,26.0},
   {-17.0,15.0,22.0},{-16.0,-25.0,17.0},{2.0,-23.0,12.0},{39.0,-10.0,30.0},{42.0,-1.0,45.0}
 };
 
@@ -80,10 +81,10 @@ Track::Initialize(void)
 	int	    image_heightt, image_widtht;
 
 
-	if (!(image_datat = (ubyte*)tga_load("road2.tga", &image_widtht,
+	if (!(image_datat = (ubyte*)tga_load("road3.tga", &image_widtht,
 		&image_heightt, TGA_TRUECOLOR_24)))
 	{
-		fprintf(stderr, "Ground::Initialize: Couldn't load road2.tga\n");
+		fprintf(stderr, "Ground::Initialize: Couldn't load road3.tga\n");
 		return false;
 	}
 
@@ -96,9 +97,9 @@ Track::Initialize(void)
 		GL_RGB, GL_UNSIGNED_BYTE, image_datat);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-		GL_LINEAR_MIPMAP_LINEAR);
+		GL_NEAREST);
 
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
@@ -117,6 +118,7 @@ Track::Initialize(void)
 	int x = 0;
 	int y = 1;
 	int z = 2;
+	int trackSize = 3.2;
 	
 	refined.Evaluate_Point((float)n_refined-1, p);
 	
@@ -140,14 +142,8 @@ Track::Initialize(void)
 		float dirz = p[2] - lastPosz;
 		
 		for (int j = 0; j < 4; j++) {
-			if (j == 2) {
-				glTexCoord2f(1.0,0.0);
-			}
-			if (j == 3) {
-				glTexCoord2f(0.0, 0.0);
-			}
 			
-			glVertex3f(points[start_i][j][x], points[start_i][j][y], points[start_i][j][z]);
+			
 			float movex = currDirx / comboxy;
 			float movey = currDiry / comboxy;
 
@@ -155,110 +151,121 @@ Track::Initialize(void)
 			if (j == 0) {
 				//>^
 				if (dirx >= 0 && diry >= 0) {
-					points[end_i][j][x] = p[0] + ((1 - movex)*-1.2);
-					points[end_i][j][y] = p[1] + ((1 - movey)*1.2);
+					points[end_i][j][x] = p[0] + ((1 - movex)*-trackSize);
+					points[end_i][j][y] = p[1] + ((1 - movey)*trackSize);
 				}
 				//<^
 				if (dirx < 0 && diry >= 0) {
-					points[end_i][j][x] = p[0] + ((1 - movex)*-1.2);
-					points[end_i][j][y] = p[1] + ((1 - movey)*-1.2);
+					points[end_i][j][x] = p[0] + ((1 - movex)*-trackSize);
+					points[end_i][j][y] = p[1] + ((1 - movey)*-trackSize);
 				}
 				//<v
 				if (dirx < 0 && diry < 0) {
-					points[end_i][j][x] = p[0] + ((1 - movex)*1.2);
-					points[end_i][j][y] = p[1] + ((1 - movey)*-1.2);
+					points[end_i][j][x] = p[0] + ((1 - movex)*trackSize);
+					points[end_i][j][y] = p[1] + ((1 - movey)*-trackSize);
 				}
 				//>v
 				if (dirx >= 0 && diry < 0) {
-					points[end_i][j][x] = p[0] + ((1 - movex)*1.2);
-					points[end_i][j][y] = p[1] + ((1 - movey)*1.2);
+					points[end_i][j][x] = p[0] + ((1 - movex)*trackSize);
+					points[end_i][j][y] = p[1] + ((1 - movey)*trackSize);
 				}
-				points[end_i][j][z] = p[2];
+				points[end_i][j][z] = p[2]-0.2;
 			}
 			
 			//bottom right
 			if (j == 1) {
 				//>^
 				if (dirx >= 0 && diry >= 0) {
-					points[end_i][j][x] = p[0] + ((1 - movex)*1.2);
-					points[end_i][j][y] = p[1] + ((1 - movey)*-1.2);
+					points[end_i][j][x] = p[0] + ((1 - movex)*trackSize);
+					points[end_i][j][y] = p[1] + ((1 - movey)*-trackSize);
 				}
 				//<^
 				if (dirx < 0 && diry >= 0) {
-					points[end_i][j][x] = p[0] + ((1 - movex)*1.2);
-					points[end_i][j][y] = p[1] + ((1 - movey)*1.2);
+					points[end_i][j][x] = p[0] + ((1 - movex)*trackSize);
+					points[end_i][j][y] = p[1] + ((1 - movey)*trackSize);
 				}
 				//<v
 				if (dirx < 0 && diry < 0) {
-					points[end_i][j][x] = p[0] + ((1 - movex)*-1.2);
-					points[end_i][j][y] = p[1] + ((1 - movey)*1.2);
+					points[end_i][j][x] = p[0] + ((1 - movex)*-trackSize);
+					points[end_i][j][y] = p[1] + ((1 - movey)*trackSize);
 				}
 				//>v
 				if (dirx >= 0 && diry < 0) {
-					points[end_i][j][x] = p[0] + ((1 - movex)*-1.2);
-					points[end_i][j][y] = p[1] + ((1 - movey)*-1.2);
+					points[end_i][j][x] = p[0] + ((1 - movex)*-trackSize);
+					points[end_i][j][y] = p[1] + ((1 - movey)*-trackSize);
 				}
-				points[end_i][j][z] = p[2];
+				points[end_i][j][z] = p[2]-0.2;
 			}
 
 			//top right
 			if (j == 2) {
 				//>^
 				if (dirx >= 0 && diry >= 0) {
-					points[end_i][j][x] = p[0] + ((1 - movex)*1.2);
-					points[end_i][j][y] = p[1] + ((1 - movey)*-1.2);
+					points[end_i][j][x] = p[0] + ((1 - movex)*trackSize);
+					points[end_i][j][y] = p[1] + ((1 - movey)*-trackSize);
 				}
 				//<^
 				if (dirx < 0 && diry >= 0) {
-					points[end_i][j][x] = p[0] + ((1 - movex)*1.2);
-					points[end_i][j][y] = p[1] + ((1 - movey)*1.2);
+					points[end_i][j][x] = p[0] + ((1 - movex)*trackSize);
+					points[end_i][j][y] = p[1] + ((1 - movey)*trackSize);
 				}
 				//<v
 				if (dirx < 0 && diry < 0) {
-					points[end_i][j][x] = p[0] + ((1 - movex)*-1.2);
-					points[end_i][j][y] = p[1] + ((1 - movey)*1.2);
+					points[end_i][j][x] = p[0] + ((1 - movex)*-trackSize);
+					points[end_i][j][y] = p[1] + ((1 - movey)*trackSize);
 				}
 				//>v
 				if (dirx >= 0 && diry < 0) {
-					points[end_i][j][x] = p[0] + ((1 - movex)*-1.2);
-					points[end_i][j][y] = p[1] + ((1 - movey)*-1.2);
+					points[end_i][j][x] = p[0] + ((1 - movex)*-trackSize);
+					points[end_i][j][y] = p[1] + ((1 - movey)*-trackSize);
 				}
-				points[end_i][j][z] = p[2]+0.2;
+				points[end_i][j][z] = p[2]+0.1;
 			}
 
 			//top left
 			if (j == 3) {
 				//>^
 				if (dirx >= 0 && diry >= 0) {
-					points[end_i][j][x] = p[0] + ((1 - movex)*-1.2);
-					points[end_i][j][y] = p[1] + ((1 - movey)*1.2);
+					points[end_i][j][x] = p[0] + ((1 - movex)*-trackSize);
+					points[end_i][j][y] = p[1] + ((1 - movey)*trackSize);
 				}
 				//<^
 				if (dirx < 0 && diry >= 0) {
-					points[end_i][j][x] = p[0] + ((1 - movex)*-1.2);
-					points[end_i][j][y] = p[1] + ((1 - movey)*-1.2);
+					points[end_i][j][x] = p[0] + ((1 - movex)*-trackSize);
+					points[end_i][j][y] = p[1] + ((1 - movey)*-trackSize);
 				}
 				//<v
 				if (dirx < 0 && diry < 0) {
-					points[end_i][j][x] = p[0] + ((1 - movex)*1.2);
-					points[end_i][j][y] = p[1] + ((1 - movey)*-1.2);
+					points[end_i][j][x] = p[0] + ((1 - movex)*trackSize);
+					points[end_i][j][y] = p[1] + ((1 - movey)*-trackSize);
 				}
 				//>v
 				if (dirx >= 0 && diry < 0) {
-					points[end_i][j][x] = p[0] + ((1 - movex)*1.2);
-					points[end_i][j][y] = p[1] + ((1 - movey)*1.2);
+					points[end_i][j][x] = p[0] + ((1 - movex)*trackSize);
+					points[end_i][j][y] = p[1] + ((1 - movey)*trackSize);
 				}
-				points[end_i][j][z] = p[2]+0.2;
-			}
-			//glTexCoord2f(1.0, 1.0);
-			if (j == 2) {
-				glTexCoord2f(1.0, 1.0);
-			}
-			if (j == 3) {
-				glTexCoord2f(0.0, 1.0);
+				points[end_i][j][z] = p[2]+0.1;
 			}
 
-			glVertex3f(points[end_i][j][x], points[end_i][j][y], points[end_i][j][z]);
+			if (j == 3) {
+				glTexCoord2f(1.0, 1.0);
+				glVertex3f(points[start_i][j][x], points[start_i][j][y], points[start_i][j][z]);
+				glTexCoord2f(1.0, 0.0);
+				glVertex3f(points[end_i][j][x], points[end_i][j][y], points[end_i][j][z]);
+			}
+			if (j == 0) {
+				glTexCoord2f(0.0, 1.0);
+				glVertex3f(points[start_i][j][x], points[start_i][j][y], points[start_i][j][z]);
+				glTexCoord2f(0.0, 0.0);
+				glVertex3f(points[end_i][j][x], points[end_i][j][y], points[end_i][j][z]);
+			}
+			
+			if (j != 3 && j != 0) {
+
+				glVertex3f(points[start_i][j][x], points[start_i][j][y], points[start_i][j][z]);
+
+				glVertex3f(points[end_i][j][x], points[end_i][j][y], points[end_i][j][z]);
+			}
 		}
 		glVertex3f(points[start_i][0][x], points[start_i][0][y], points[start_i][0][z]);
 		glVertex3f(points[end_i][0][x], points[end_i][0][y], points[end_i][0][z]);
@@ -285,10 +292,10 @@ Track::Initialize(void)
 	int	    image_height, image_width;
 
 
-	if (!(image_data = (ubyte*)tga_load("thundercar.tga", &image_width,
+	if (!(image_data = (ubyte*)tga_load("car.tga", &image_width,
 		&image_height, TGA_TRUECOLOR_24)))
 	{
-		fprintf(stderr, "Ground::Initialize: Couldn't load thundercar.tga\n");
+		fprintf(stderr, "Ground::Initialize: Couldn't load thundercar2.tga\n");
 		return false;
 	}
 	
@@ -306,15 +313,14 @@ Track::Initialize(void)
 		GL_NEAREST_MIPMAP_LINEAR);
 
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-
+	///////////////////////////////////////////////////////////
 
     // Set up the train. At this point a cube is drawn. NOTE: The
     // x-axis will be aligned to point along the track. The origin of the
     // train is assumed to be at the bottom of the train.
     train_list = glGenLists(1);
     glNewList(train_list, GL_COMPILE);
-    glColor3f(1.0, 1.0, 1.0);
+    //glColor3f(1.0f, 1.0f, 1.0f);
 
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, traintext);
@@ -323,9 +329,13 @@ Track::Initialize(void)
 
 	//top    (top of coaster)
 	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(1.0, 0.5);
 	glVertex3f(0.5f, 0.5f, 0.6f);
+	glTexCoord2f(1.0, 1.0);
 	glVertex3f(-0.5f, 0.5f, 0.6f);
+	glTexCoord2f(0.5, 1.0);
 	glVertex3f(-0.5f, -0.5f, 0.6f);
+	glTexCoord2f(0.5, 0.5);
 	glVertex3f(0.5f, -0.5f, 0.6f);
 
 	//bottom
@@ -335,73 +345,65 @@ Track::Initialize(void)
 	glVertex3f(-0.5f, 0.5f, 0.0f);
 	glVertex3f(0.5f, 0.5f, 0.0f);
 
-	//right  (front of coaster)
+	//right  (front of coaster) front texture
 	glNormal3f(1.0f, 0.0f, 0.0f);
-	glVertex3f(0.5f, 0.5f, 0.0f);
-	glVertex3f(0.5f, 0.5f, 1.0f);
-	glVertex3f(0.5f, -0.5f, 1.0f);
-	glVertex3f(0.5f, -0.5f, 0.0f);
+	glTexCoord2f(0.5, 0.5); glVertex3f(0.5f, 0.5f, 0.0f);
+	glTexCoord2f(0.5, 0.0); glVertex3f(0.5f, 0.5f, 1.0f);
+	glTexCoord2f(1.0, 0.0); glVertex3f(0.5f, -0.5f, 1.0f);
+	glTexCoord2f(1.0, 0.5); glVertex3f(0.5f, -0.5f, 0.0f);
 	//right inside (front of coaster)
 	glNormal3f(-1.0f, 0.0f, 0.0f);
-	glColor3f(0.1, 0.1, 0.1);
 	glVertex3f(0.5f, 0.5f, 0.0f);
 	glVertex3f(0.5f, -0.5f, 0.0f);
 	glVertex3f(0.5f, -0.5f, 1.0f);
 	glVertex3f(0.5f, 0.5f, 1.0f);
-	glColor3f(1.0, 1.0, 1.0);
 
-	//left
+	//left back texture
 	glNormal3f(-1.0f, 0.0f, 0.0f);
-	glVertex3f(-0.5f, 0.5f, 1.0f);
-	glVertex3f(-0.5f, 0.5f, 0.0f);
-	glVertex3f(-0.5f, -0.5f, 0.0f);
-	glVertex3f(-0.5f, -0.5f, 1.0f);
+	glTexCoord2f(0.0, 0.5); glVertex3f(-0.5f, 0.5f, 1.0f);
+	glTexCoord2f(0.0, 1.0); glVertex3f(-0.5f, 0.5f, 0.0f);
+	glTexCoord2f(0.5, 1.0); glVertex3f(-0.5f, -0.5f, 0.0f);
+	glTexCoord2f(0.5, 0.5); glVertex3f(-0.5f, -0.5f, 1.0f);
 	//left inside
 	glNormal3f(1.0f, 0.0f, 0.0f);
-	glColor3f(0.1, 0.1, 0.1);
 	glVertex3f(-0.5f, -0.5f, 1.0f);
 	glVertex3f(-0.5f, -0.5f, 0.0f);
 	glVertex3f(-0.5f, 0.5f, 0.0f);
 	glVertex3f(-0.5f, 0.5f, 1.0f);
-	glColor3f(1.0, 1.0, 1.0);
 
 	//far
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2f(1.0, 0.0);
+	glTexCoord2f(0.5, 0.0);
 	glVertex3f(0.5f, 0.5f, 1.0f);
-	glTexCoord2f(1.0, 1.0);
+	glTexCoord2f(0.5, 0.5);
 	glVertex3f(0.5f, 0.5f, 0.0f);
-	glTexCoord2f(0.0, 1.0);
+	glTexCoord2f(0.0, 0.5);
 	glVertex3f(-0.5f, 0.5f, 0.0f);
 	glTexCoord2f(0.0, 0.0);
 	glVertex3f(-0.5f, 0.5f, 1.0f);
 	//far inside
 	glNormal3f(0.0f, -1.0f, 0.0f);
-	glColor3f(0.1, 0.1, 0.1);
 	glVertex3f(-0.5f, 0.5f, 1.0f);
 	glVertex3f(-0.5f, 0.5f, 0.0f);
 	glVertex3f(0.5f, 0.5f, 0.0f);
 	glVertex3f(0.5f, 0.5f, 1.0f);
-	glColor3f(1.0, 1.0, 1.0);
 
 	//near
 	glNormal3f(0.0f, -1.0f, 0.0f);
-	glTexCoord2f(1.0, 1.0);
+	glTexCoord2f(0.5, 0.5);
 	glVertex3f(0.5f, -0.5f, 0.0f);
-	glTexCoord2f(0.0, 1.0);
+	glTexCoord2f(0.5, 0.0);
 	glVertex3f(0.5f, -0.5f, 1.0f);
 	glTexCoord2f(0.0, 0.0);
 	glVertex3f(-0.5f, -0.5f, 1.0f);
-	glTexCoord2f(1.0, 0.0);
+	glTexCoord2f(0.0, 0.5);
 	glVertex3f(-0.5f, -0.5f, 0.0f);
 	//near inside
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glColor3f(0.1, 0.1, 0.1);
 	glVertex3f(-0.5f, -0.5f, 0.0f);
 	glVertex3f(-0.5f, -0.5f, 1.0f);
 	glVertex3f(0.5f, -0.5f, 1.0f);
 	glVertex3f(0.5f, -0.5f, 0.0f);
-	glColor3f(1.0, 1.0, 1.0);
 
     glEnd();
 	glDisable(GL_TEXTURE_2D);
@@ -412,55 +414,76 @@ Track::Initialize(void)
 	trackpole = glGenLists(1);
 	glNewList(trackpole, GL_COMPILE);
 	glColor3f(0.75, 0.75, 0.75);
+	float sizeOfPole = 0.5;
 
 	glBegin(GL_QUADS);
 
 	//top
 	glNormal3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(0.1f, 0.1f, 1.0f);
-	glVertex3f(0.0f, 0.1f, 1.0f);
+	glVertex3f(sizeOfPole, sizeOfPole, 1.0f);
+	glVertex3f(0.0f, sizeOfPole, 1.0f);
 	glVertex3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(0.1f, 0.0f, 1.0f);
+	glVertex3f(sizeOfPole, 0.0f, 1.0f);
 
 	//bottom
 	glNormal3f(0.0f, 0.0f, -1.0f);
-	glVertex3f(0.1f, 0.0f, 0.0f);
+	glVertex3f(sizeOfPole, 0.0f, 0.0f);
 	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, 0.1f, 0.0f);
-	glVertex3f(0.1f, 0.1f, 0.0f);
+	glVertex3f(0.0f, sizeOfPole, 0.0f);
+	glVertex3f(sizeOfPole, sizeOfPole, 0.0f);
 
 	//right
 	glNormal3f(0.1f, 0.0f, 0.0f);
-	glVertex3f(0.1f, 0.0f, 0.0f);
-	glVertex3f(0.1f, 0.1f, 0.0f);
-	glVertex3f(0.1f, 0.1f, 1.0f);
-	glVertex3f(0.1f, 0.0f, 1.0f);
+	glVertex3f(sizeOfPole, 0.0f, 0.0f);
+	glVertex3f(sizeOfPole, sizeOfPole, 0.0f);
+	glVertex3f(sizeOfPole, sizeOfPole, 1.0f);
+	glVertex3f(sizeOfPole, 0.0f, 1.0f);
 
 	//left
 	glNormal3f(-1.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, 0.1f, 1.0f);
-	glVertex3f(0.0f, 0.1f, 0.0f);
+	glVertex3f(0.0f, sizeOfPole, 1.0f);
+	glVertex3f(0.0f, sizeOfPole, 0.0f);
 	glVertex3f(0.0f, 0.0f, 0.0f);
 	glVertex3f(0.0f, 0.0f, 1.0f);
 
 	//far
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glVertex3f(0.1f, 0.1f, 1.0f);
-	glVertex3f(0.1f, 0.1f, 0.0f);
-	glVertex3f(0.0f, 0.1f, 0.0f);
-	glVertex3f(0.0f, 0.1f, 1.0f);
+	glVertex3f(sizeOfPole, sizeOfPole, 1.0f);
+	glVertex3f(sizeOfPole, sizeOfPole, 0.0f);
+	glVertex3f(0.0f, sizeOfPole, 0.0f);
+	glVertex3f(0.0f, sizeOfPole, 1.0f);
 
 	//near
 	glNormal3f(0.0f, -1.0f, 0.0f);
-	glVertex3f(0.1f, 0.0f, 0.0f);
-	glVertex3f(0.1f, 0.0f, 1.0f);
+	glVertex3f(sizeOfPole, 0.0f, 0.0f);
+	glVertex3f(sizeOfPole, 0.0f, 1.0f);
 	glVertex3f(0.0f, 0.0f, 1.0f);
 	glVertex3f(0.0f, 0.0f, 0.0f);
 
 	glEnd();
 	glEndList();
 
-
+	//////////////////initialize random numbers for parametric instancing
+	srand(time(NULL));
+	float sizeLO = 0.75;
+	float sizeHI = 4.0;
+	float colorLO = 0.1;
+	float colorHI = 1.0;
+	int realAmountOfCars = floor(maxLengthOfTrail / dfc);
+	if (amountOfCars < realAmountOfCars) {
+		realAmountOfCars = amountOfCars;
+	}
+	
+	for (int i = 0; i <= realAmountOfCars; i++) { 
+		for (int j = 0; j < 6; j++) { //6 for number of items needing to be randomized per car
+			if (j < 3) {
+				randomNums[i].push_back(sizeLO + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (sizeHI - sizeLO))));
+			}
+			else {
+				randomNums[i].push_back(colorLO + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (colorHI - colorLO))));
+			}
+		}
+	}
 
     initialized = true;
 
@@ -486,7 +509,7 @@ Track::Draw(void)
 
 
 	for (int i = 0; i < refinetrackpos[0].size(); i++) {
-		if (i % 10 == 0) {
+		if (i % 12 == 0) {
 			glPushMatrix();
 			glTranslatef(refinetrackpos[0][i], refinetrackpos[1][i], 0.0);
 			glScalef(1.0, 1.0, refinetrackpos[2][i]);
@@ -500,53 +523,44 @@ Track::Draw(void)
     // Figure out where the train is
     track->Evaluate_Point(posn_on_track, posn);
 	
-	posnvals[0].insert(posnvals[0].begin(), posn[0]);
-	posnvals[1].insert(posnvals[1].begin(), posn[1]);
-	posnvals[2].insert(posnvals[2].begin(), posn[2]);
+	if (!stop) {
+		posnvals[0].insert(posnvals[0].begin(), posn[0]);
+		posnvals[1].insert(posnvals[1].begin(), posn[1]);
+		posnvals[2].insert(posnvals[2].begin(), posn[2]);
 
-	if (posnvals[0].size() >= maxLengthOfTrail) {
-		posnvals[0].pop_back();
-		posnvals[1].pop_back();
-		posnvals[2].pop_back();
+		if (posnvals[0].size() >= maxLengthOfTrail) {
+			posnvals[0].pop_back();
+			posnvals[1].pop_back();
+			posnvals[2].pop_back();
+		}
 	}
 
-    // Translate the train to the point
-
-	glTranslatef(posn[0], posn[1], posn[2]);
 
     // ...and what it's orientation is
     track->Evaluate_Derivative(posn_on_track, tangent);
     Normalize_3(tangent);
 
-	tangentvals[0].insert(tangentvals[0].begin(), tangent[0]);
-	tangentvals[1].insert(tangentvals[1].begin(), tangent[1]);
-	tangentvals[2].insert(tangentvals[2].begin(), tangent[2]);
+	if (!stop) {
+		tangentvals[0].insert(tangentvals[0].begin(), tangent[0]);
+		tangentvals[1].insert(tangentvals[1].begin(), tangent[1]);
+		tangentvals[2].insert(tangentvals[2].begin(), tangent[2]);
 
-	if (tangentvals[0].size() >= maxLengthOfTrail) {
-		tangentvals[0].pop_back();
-		tangentvals[1].pop_back();
-		tangentvals[2].pop_back();
+		if (tangentvals[0].size() >= maxLengthOfTrail) {
+			tangentvals[0].pop_back();
+			tangentvals[1].pop_back();
+			tangentvals[2].pop_back();
+		}
 	}
 
-    // Rotate it to poitn along the track, but stay horizontal
-		angle = atan2(tangent[1], tangent[0]) * 180.0 / M_PI;
-	
-    glRotatef((float)angle, 0.0f, 0.0f, 1.0f);
-	
-    // Another rotation to get the tilt right.
-		angle = asin(-tangent[2]) * 180.0 / M_PI;
-	
-    glRotatef((float)angle, 0.0f, 1.0f, 0.0f);
-
-	
-
-    // Draw the train
-    glCallList(train_list);
-	
+    // Draw the trains
 	////////////////////////////////////////////
 	glPopMatrix();
-	int amountOfCarts = floor(maxLengthOfTrail / dfc);
-	for (int i = 1; i <= amountOfCarts; i++) {
+	int realAmountOfCars = floor(maxLengthOfTrail / dfc);
+	if (amountOfCars < realAmountOfCars) {
+		realAmountOfCars = amountOfCars;
+	}
+
+	for (int i = 0; i <= realAmountOfCars; i++) {
 		glPushMatrix();
 		if (posnvals[0].size() < ((dfc*i) + 1)) {
 			glTranslatef(posnvals[0][0], posnvals[1][0], posnvals[2][0]);
@@ -571,12 +585,33 @@ Track::Draw(void)
 		}
 		glRotatef((float)angle, 0.0f, 1.0f, 0.0f);
 
-		glCallList(train_list);
+		//call parametric instancing function to change appearance of cars
+
+		if (i == 0) {
+			parametricCar(3.0,2.0,1.0, 0.75,0.75,1.0);
+		}
+		if (i == realAmountOfCars) {
+		parametricCar(5.0, 3.0, 1.0,  1.0, 0.75, 0.75);
+		}
+		if (i != 0 && i != realAmountOfCars) {
+			parametricCar(randomNums[i][0], randomNums[i][1], randomNums[i][2],
+				randomNums[i][3], randomNums[i][4], randomNums[i][5]);
+		}
+		//only call each train to display when the position is ready
+		if (posnvals[0].size() > ((dfc*i) + 1)) {
+			glCallList(train_list);
+		}
 		glPopMatrix();
 	}
 	///////////////////////////////////////////
     glPopMatrix();
     glPopMatrix();
+}
+
+void
+Track::parametricCar(float sizex, float sizey, float sizez, float red, float green, float blue) {
+	glScalef(sizex, sizey, sizez);
+	glColor3f(red, green, blue);
 }
 
 
@@ -623,3 +658,4 @@ Track::Update(float dt)
 	speed = (float)sqrt(2.0 * ( TRAIN_ENERGY - 9.81 * point[2] ));
 
 }
+
