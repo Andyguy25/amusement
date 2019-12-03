@@ -23,7 +23,7 @@ Speaker::Initialize(void)
 	if (!(image_data = (ubyte*)tga_load("speaker.tga", &image_width,
 		&image_height, TGA_TRUECOLOR_24)))
 	{
-		fprintf(stderr, "Ground::Initialize: Couldn't load disneysign.tga\n");
+		fprintf(stderr, "Ground::Initialize: Couldn't load speaker.tga\n");
 		return false;
 	}
 
@@ -156,30 +156,39 @@ Speaker::Draw(void)
 {
 
 	//parametric call for speakers
-	parametricSpeaker(-80.0, 0.0, 40.0, 0.75, 0.75, 1.0, true);
-	parametricSpeaker(-80, -20, 30, 1.0, 1.0, 1.0, true);
-	parametricSpeaker(-80, -40, 0, 2.0, 2.0, 2.0, false);
 
-	parametricSpeaker(-80, -80, 0, 2.0, 3.0, 2.0, false);
-	parametricSpeaker(-80, -80, 20, 2.0, 2.0, 2.0, false);
-	parametricSpeaker(-80, -80, 40, 2.0, 1.0, 1.0, false);
+	parametricSpeaker(-80, -10, 0, 1.5, 1.5, 1.5, false);
+	parametricSpeaker(-77, -10, 15, 1.2, 1.2, 1.2, false);
+	parametricSpeaker(-75, -10, 27, 1.0, 1.0, 1.0, false);
+
+	parametricSpeaker(-76, -20.0, 40.0, 0.5, 0.5, 0.5, true);
+	parametricSpeaker(-80, -35, 30, 1.0, 1.0, 1.0, true);
+	parametricSpeaker(-80, -50, 30, 1.0, 1.0, 1.0, true);
+	parametricSpeaker(-76, -60.0, 40.0, 0.5, 0.5, 0.5, true);
+	
+	parametricSpeaker(-80, -80, 0, 1.5, 1.5, 1.5, false);
+	parametricSpeaker(-77, -77, 15, 1.2, 1.2, 1.2, false);
+	parametricSpeaker(-75, -75, 27, 1.0, 1.0, 1.0, false);
+
 }
 
 void
 Speaker::parametricSpeaker(float posx, float posy, float posz, float sizex, float sizey, float sizez, bool haveStand) {
-	if (sizez < 1.0 && haveStand == true) {
-		haveStand = false;
-	}
+	
 	glPushMatrix();
 	glTranslatef(posx, posy, posz);
 	glScalef(sizex, sizey, sizez);
 	glCallList(display_list);
+	glPopMatrix();
 	if (haveStand) {
 		glPushMatrix();
+		float centerx = (sizex * 10) / 2;
+		float centery = (sizey * 10) / 2;
+
+		glTranslatef(posx+centerx, posy+centery, 0);
+		
 		glScalef(1.0, 1.0, (posz - 0.001));
-		glTranslatef(10 / 2, 10 / 2, -1.0);
 		glCallList(stand);
 		glPopMatrix();
 	}
-	glPopMatrix();
 }

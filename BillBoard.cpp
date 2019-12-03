@@ -92,7 +92,6 @@ BillBoard::Initialize(void)
 	glEndList();
 
 
-	///////for stand now
 	stand = glGenLists(1);
 	glNewList(stand, GL_COMPILE);
 	glColor3f(0.5859, 0.2929, 0.0);
@@ -152,7 +151,7 @@ BillBoard::Draw(void)
 {
 	glPushMatrix();
 	glTranslatef(-70.0, 20.0, 10.0);
-	glScalef(1.0, 1.5, 1.5);
+	glScalef(1.0, 1.0, 1.0);
 	glCallList(display_list);
 
 	glPushMatrix();

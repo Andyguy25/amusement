@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <iostream>
 
-const double WorldWindow::FOV_X = 75.0;
+const double WorldWindow::FOV_X = 90.0;
 
 WorldWindow::WorldWindow(int x, int y, int width, int height, char *label)
 	: Fl_Gl_Window(x, y, width, height, label)

@@ -1,15 +1,14 @@
 #pragma once
 
 #include <FL/gl.h>
-#include <GL/GLU.h>
+#include <GL/glu.h>
 
 class Tree {
 private:
 	GLubyte tree_list;
-	GLUquadricObj *quad = gluNewQuadric();
-	//gluQuadricDrawStyle(GLU_LINE);
-
-
+	GLubyte branch_list;
+	GLubyte branch_list2;
+	
 	bool initialized;
 
 public:
@@ -19,8 +18,5 @@ public:
 	bool Initialize(void);
 	void Draw(void);
 	//float for size, (scales whole tree evenly), and int for season.
-	//SEE IF POSSIBLE TO DRAW DIFFERENT VERTICES FOR DIFFERENT PARAMETRIC CALL
-	//EX. NOT DRAW CONE FOR TREE WHEN WINTER IS USED
-	//void parametricTree(float, int); 
-
+	void parametricTree(float, int); 
 };
