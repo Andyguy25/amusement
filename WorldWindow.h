@@ -17,6 +17,8 @@
 #include "Ground.h"
 #include "Track.h"
 #include "BillBoard.h"
+#include "Speaker.h"
+#include "Tree.h"
 
 
 // Subclass the Fl_Gl_Window because we want to draw OpenGL in here.
@@ -42,7 +44,9 @@ class WorldWindow : public Fl_Gl_Window {
     private:
 	Ground	    ground;	    // The ground object.
 	Track  traintrack;	    // The train and track.
+	Speaker speaker;
 	BillBoard billboard;
+	Tree tree;
 
 	static const double FOV_X; // The horizontal field of view.
 

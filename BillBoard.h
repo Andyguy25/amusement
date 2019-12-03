@@ -15,6 +15,5 @@ public:
 
 	bool Initialize(void);
 	void Draw(void);
-	void parametricSpeaker(float, float, float, float, float, float, bool);
 
 };

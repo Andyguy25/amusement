@@ -20,7 +20,7 @@ BillBoard::Initialize(void)
 	ubyte *image_data;
 	int image_height, image_width;
 
-	if (!(image_data = (ubyte*)tga_load("speaker.tga", &image_width,
+	if (!(image_data = (ubyte*)tga_load("disneysign.tga", &image_width,
 		&image_height, TGA_TRUECOLOR_24)))
 	{
 		fprintf(stderr, "Ground::Initialize: Couldn't load disneysign.tga\n");
@@ -47,45 +47,45 @@ BillBoard::Initialize(void)
 
 	//top
 	glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f(0.0, 0.0); glVertex3f(10.0f, 10.0f, 10.0f);
-	glTexCoord2f(1.0, 0.0); glVertex3f(0.0f, 10.0f, 10.0f);
-	glTexCoord2f(1.0, 1.0); glVertex3f(0.0f, 0.0f, 10.0f);
-	glTexCoord2f(0.0, 1.0); glVertex3f(10.0f, 0.0f, 10.0f);
-	
+	glVertex3f(1.0f, 40.0f, 20.0f);
+	glVertex3f(0.0f, 40.0f, 20.0f);
+	glVertex3f(0.0f, 0.0f, 20.0f);
+	glVertex3f(1.0f, 0.0f, 20.0f);
+
 	//bottom
 	glNormal3f(0.0f, 0.0f, -1.0f);
-	glVertex3f(10.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 0.0f);
 	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, 10.0f, 0.0f);
-	glVertex3f(10.0f, 10.0f, 0.0f);
+	glVertex3f(0.0f, 40.0f, 0.0f);
+	glVertex3f(1.0f, 40.0f, 0.0f);
 
 	//right (front of billboard)
 	glNormal3f(1.0f, 0.0f, 0.0f);
-	glTexCoord2f(0.0, 0.0); glVertex3f(10.0f, 0.0f, 0.0f);
-	glTexCoord2f(1.0, 0.0); glVertex3f(10.0f, 10.0f, 0.0f);
-	glTexCoord2f(1.0, 1.0); glVertex3f(10.0f, 10.0f, 10.0f);
-	glTexCoord2f(0.0, 1.0); glVertex3f(10.0f, 0.0f, 10.0f);
-	
+	glTexCoord2f(0.0, 0.0); glVertex3f(1.0f, 0.0f, 0.0f);
+	glTexCoord2f(1.0, 0.0); glVertex3f(1.0f, 40.0f, 0.0f);
+	glTexCoord2f(1.0, 1.0); glVertex3f(1.0f, 40.0f, 20.0f);
+	glTexCoord2f(0.0, 1.0); glVertex3f(1.0f, 0.0f, 20.0f);
+
 	//left
 	glNormal3f(-1.0f, 0.0f, 0.0f);
-	glTexCoord2f(0.0, 1.0); glVertex3f(0.0f, 10.0f, 10.0f);
-	glTexCoord2f(0.0, 0.0); glVertex3f(0.0f, 10.0f, 0.0f);
+	glTexCoord2f(0.0, 1.0); glVertex3f(0.0f, 40.0f, 20.0f);
+	glTexCoord2f(0.0, 0.0); glVertex3f(0.0f, 40.0f, 0.0f);
 	glTexCoord2f(1.0, 0.0); glVertex3f(0.0f, 0.0f, 0.0f);
-	glTexCoord2f(1.0, 1.0); glVertex3f(0.0f, 0.0f, 10.0f);
+	glTexCoord2f(1.0, 1.0); glVertex3f(0.0f, 0.0f, 20.0f);
 
 	//far
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2f(0.0, 1.0); glVertex3f(10.0f, 10.0f, 10.0f);
-	glTexCoord2f(0.0, 0.0); glVertex3f(10.0f, 10.0f, 0.0f);
-	glTexCoord2f(1.0, 0.0); glVertex3f(0.0f, 10.0f, 0.0f);
-	glTexCoord2f(1.0, 1.0); glVertex3f(0.0f, 10.0f, 10.0f);
+	glVertex3f(1.0f, 40.0f, 20.0f);
+	glVertex3f(1.0f, 40.0f, 0.0f);
+	glVertex3f(0.0f, 40.0f, 0.0f);
+	glVertex3f(0.0f, 40.0f, 20.0f);
 
 	//near
 	glNormal3f(0.0f, -1.0f, 0.0f);
-	glTexCoord2f(0.0, 1.0); glVertex3f(10.0f, 0.0f, 0.0f);
-	glTexCoord2f(0.0, 0.0); glVertex3f(10.0f, 0.0f, 10.0f);
-	glTexCoord2f(1.0, 0.0); glVertex3f(0.0f, 0.0f, 10.0f);
-	glTexCoord2f(1.0, 1.0); glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 20.0f);
+	glVertex3f(0.0f, 0.0f, 20.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
 
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
@@ -95,54 +95,50 @@ BillBoard::Initialize(void)
 	///////for stand now
 	stand = glGenLists(1);
 	glNewList(stand, GL_COMPILE);
-	glColor3f(0.1, 0.1, 0.1);
-
-	float sizeOfPole = 0.5;
-
+	glColor3f(0.5859, 0.2929, 0.0);
 	glBegin(GL_QUADS);
 
 	//top
 	glNormal3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(sizeOfPole, sizeOfPole, 1.0f);
-	glVertex3f(0.0f, sizeOfPole, 1.0f);
-	glVertex3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(sizeOfPole, 0.0f, 1.0f);
+	glVertex3f(1.0f, 1.0f, 30.0f);
+	glVertex3f(0.0f, 1.0f, 30.0f);
+	glVertex3f(0.0f, 0.0f, 30.0f);
+	glVertex3f(1.0f, 0.0f, 30.0f);
 
 	//bottom
 	glNormal3f(0.0f, 0.0f, -1.0f);
-	glVertex3f(sizeOfPole, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 0.0f);
 	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, sizeOfPole, 0.0f);
-	glVertex3f(sizeOfPole, sizeOfPole, 0.0f);
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(1.0f, 1.0f, 0.0f);
 
 	//right
-	glNormal3f(0.1f, 0.0f, 0.0f);
-	glVertex3f(sizeOfPole, 0.0f, 0.0f);
-	glVertex3f(sizeOfPole, sizeOfPole, 0.0f);
-	glVertex3f(sizeOfPole, sizeOfPole, 1.0f);
-	glVertex3f(sizeOfPole, 0.0f, 1.0f);
+	glNormal3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 1.0f, 0.0f);
+	glVertex3f(1.0f, 1.0f, 30.0f);
+	glVertex3f(1.0f, 0.0f, 30.0f);
 
 	//left
 	glNormal3f(-1.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, sizeOfPole, 1.0f);
-	glVertex3f(0.0f, sizeOfPole, 0.0f);
+	glVertex3f(0.0f, 1.0f, 30.0f);
+	glVertex3f(0.0f, 1.0f, 0.0f);
 	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(0.0f, 0.0f, 30.0f);
 
 	//far
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glVertex3f(sizeOfPole, sizeOfPole, 1.0f);
-	glVertex3f(sizeOfPole, sizeOfPole, 0.0f);
-	glVertex3f(0.0f, sizeOfPole, 0.0f);
-	glVertex3f(0.0f, sizeOfPole, 1.0f);
+	glVertex3f(1.0f, 1.0f, 30.0f);
+	glVertex3f(1.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, 1.0f, 30.0f);
 
 	//near
 	glNormal3f(0.0f, -1.0f, 0.0f);
-	glVertex3f(sizeOfPole, 0.0f, 0.0f);
-	glVertex3f(sizeOfPole, 0.0f, 1.0f);
-	glVertex3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 30.0f);
+	glVertex3f(0.0f, 0.0f, 30.0f);
 	glVertex3f(0.0f, 0.0f, 0.0f);
-
 	glEnd();
 	glEndList();
 
@@ -154,33 +150,17 @@ BillBoard::Initialize(void)
 void
 BillBoard::Draw(void)
 {
-
-	//parametric call for speakers
-	parametricSpeaker(-80.0, 0.0, 40.0,  0.75,0.75,1.0, true);
-	parametricSpeaker(-80, -20, 30,   1.0, 1.0, 1.0, true);
-	parametricSpeaker(-80, -40, 0,   2.0, 2.0, 2.0, false);
-
-	parametricSpeaker(-80, -80, 0,   2.0, 3.0, 2.0, false);
-	parametricSpeaker(-80, -80, 20,   2.0, 2.0, 2.0, false);
-	parametricSpeaker(-80, -80, 40,   2.0, 1.0, 1.0, false);
-	
-}
-
-void
-BillBoard::parametricSpeaker(float posx, float posy, float posz, float sizex, float sizey, float sizez, bool haveStand) {
-	if (sizez < 1.0 && haveStand == true) {
-		haveStand = false;
-	}
 	glPushMatrix();
-	glTranslatef(posx, posy, posz);
-	glScalef(sizex, sizey, sizez);
+	glTranslatef(-70.0, 20.0, 10.0);
+	glScalef(1.0, 1.5, 1.5);
 	glCallList(display_list);
-	if (haveStand) {
-		glPushMatrix();
-		glScalef(1.0, 1.0, (posz - 0.001));
-		glTranslatef(10 / 2, 10 / 2, -1.0);
-		glCallList(stand);
-		glPopMatrix();
-	}
+
+	glPushMatrix();
+	glTranslatef(-1.0, 0.0, -10.0);
+	glCallList(stand);
+
+	glTranslatef(0.0, 39.0, 0.0);
+	glCallList(stand);
+	glPopMatrix();
 	glPopMatrix();
 }

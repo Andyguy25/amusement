@@ -92,7 +92,9 @@ WorldWindow::draw(void)
 	// Initialize all the objects.
 	ground.Initialize();
 	traintrack.Initialize();
+	speaker.Initialize();
 	billboard.Initialize();
+	tree.Initialize();
     }
 	
     // Stuff out here relies on a coordinate system or must be done on every
@@ -139,7 +141,9 @@ WorldWindow::draw(void)
     // Draw stuff. Everything.
     ground.Draw();
     traintrack.Draw();
+	speaker.Draw();
 	billboard.Draw();
+	tree.Draw();
 }
 
 
