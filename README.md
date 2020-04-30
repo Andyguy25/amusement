@@ -9,4 +9,4 @@ Starting from a basic implementation of a running environment, I implemented:
 * added front cart and last cart first person view
 
 
-![](amusement.png)
+![](AmusementPark.gif)
